@@ -2,7 +2,9 @@ logs
 *.log
 npm-debug.log*
 
-node_modules/
+**/node_modules/
+
+*.js
 
 .npm/
 
@@ -28,7 +30,6 @@ coverage/
 
 yarn.lock
 package-lock.json
-
 *.sqlite
 *.sqlite3
 *.db

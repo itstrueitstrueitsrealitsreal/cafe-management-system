@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es6", // The ECMAScript target version
+    "module": "commonjs", // Module system for Node.js
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src", // Root directory for TypeScript source files
+    "strict": true, // Enable strict type-checking
+    "esModuleInterop": true, // Fix for module imports (like express and dotenv)
+    "allowSyntheticDefaultImports": true, // Allow default imports for non-ES6 modules
+    "skipLibCheck": true // Skip type checks of declaration files
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
