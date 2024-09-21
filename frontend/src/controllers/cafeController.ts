@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Cafe from "../models/cafe";
+import Employee from "../models/employee";
 
 // Create a new cafe
 export const createCafe = async (
@@ -83,5 +84,47 @@ export const deleteCafe = async (
     }
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
+  }
+};
+
+// GET /cafes?location=<location>
+export const getCafesByLocation = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const location = req.query.location as string | undefined;
+
+    let cafes;
+
+    if (location) {
+      // Filter cafes by location if provided
+      cafes = await Cafe.find({ location });
+    } else {
+      // Get all cafes if no location is provided
+      cafes = await Cafe.find({});
+    }
+
+    // Calculate the number of employees for each cafe
+    const cafesWithEmployeeCount = await Promise.all(
+      cafes.map(async (cafe) => {
+        const employeeCount = await Employee.countDocuments({ cafe: cafe._id });
+        return {
+          name: cafe.name,
+          description: cafe.description,
+          employees: employeeCount,
+          logo: cafe.logo,
+          location: cafe.location,
+          id: cafe._id,
+        };
+      })
+    );
+
+    // Sort by the number of employees in descending order
+    cafesWithEmployeeCount.sort((a, b) => b.employees - a.employees);
+
+    res.json(cafesWithEmployeeCount);
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
   }
 };

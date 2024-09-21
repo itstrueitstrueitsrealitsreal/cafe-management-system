@@ -34,7 +34,7 @@ const employeesData: {
   start_date: Date;
 }[] = [
   {
-    id: "UI000001",
+    id: "UI0000001",
     name: "John Doe",
     email_address: "johndoe@example.com",
     phone_number: "91234567",
@@ -43,7 +43,7 @@ const employeesData: {
     start_date: new Date("2023-01-01"),
   },
   {
-    id: "UI000002",
+    id: "UI0000002",
     name: "Jane Smith",
     email_address: "janesmith@example.com",
     phone_number: "81234567",
@@ -53,30 +53,66 @@ const employeesData: {
   },
 ];
 
+// Reset the database by dropping collections
+const resetDatabase = async () => {
+  try {
+    console.log("Resetting database...");
+    // Connect to the database
+    await mongoose.connect(process.env.MONGO_URI as string);
+
+    // Check if the connection is ready before accessing the database
+    if (mongoose.connection.readyState === 1 && mongoose.connection.db) {
+      // Drop collections
+      await mongoose.connection.db.dropCollection("employees");
+      await mongoose.connection.db.dropCollection("cafes");
+    } else {
+      throw new Error("Database connection is not ready");
+    }
+
+    console.log("Database reset successfully!");
+  } catch (err) {
+    console.error("Error resetting the database:", err);
+  } finally {
+    // Always close the connection
+    await mongoose.disconnect();
+  }
+};
+
 // Seed function to populate the database
 const seedDatabase = async () => {
   try {
+    console.log("Seeding database...");
+    // Connect to the database
     await mongoose.connect(process.env.MONGO_URI as string);
 
+    // Clear the collections before seeding
     await Cafe.deleteMany({});
     await Employee.deleteMany({});
 
+    // Insert cafes and capture the ObjectIds
     const cafes = (await Cafe.insertMany(cafesData)) as (ICafe & {
       _id: mongoose.Types.ObjectId;
     })[];
 
+    // Assign cafe IDs to employees
     employeesData[0].cafe = cafes[0]._id;
     employeesData[1].cafe = cafes[1]._id;
 
+    // Insert employees
     await Employee.insertMany(employeesData);
 
     console.log("Database seeded successfully!");
-    mongoose.connection.close();
   } catch (err) {
     console.error("Error seeding the database:", err);
-    mongoose.connection.close();
+  } finally {
+    // Always close the connection
+    await mongoose.disconnect();
   }
 };
 
-// Run the seed function
-seedDatabase();
+const main = async () => {
+  await resetDatabase();
+  await seedDatabase();
+};
+
+main();
