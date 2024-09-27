@@ -81,10 +81,15 @@ export const getEmployeeById = async (
   res: Response
 ): Promise<void> => {
   try {
-    const employee = await Employee.findById(req.params.id).populate("cafe");
+    const employee = await Employee.findOne({ id: req.params.id }).populate(
+      "cafe"
+    );
+
     if (!employee) {
       res.status(404).json({ message: "Employee not found" });
+      return;
     }
+
     res.json(employee);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
