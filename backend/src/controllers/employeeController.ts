@@ -139,15 +139,22 @@ export const updateEmployee = async (
 };
 
 // Delete an employee
+// Delete an employee by custom 'id' field (not MongoDB '_id')
 export const deleteEmployee = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
+    // Find the employee by custom 'id' field and delete it
+    const deletedEmployee = await Employee.findOneAndDelete({
+      id: req.params.id,
+    });
+
     if (!deletedEmployee) {
       res.status(404).json({ message: "Employee not found" });
+      return;
     }
+
     res.status(200).json({ message: "Employee deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
