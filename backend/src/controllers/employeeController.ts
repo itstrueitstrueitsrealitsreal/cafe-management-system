@@ -26,20 +26,6 @@ export const createEmployee = async (
       return;
     }
 
-    // If a cafe is provided, ensure that the employee is not already assigned to another cafe
-    if (cafeId) {
-      const employeeWithCafe = await Employee.findOne({
-        id,
-        cafe: { $ne: cafeId },
-      });
-      if (employeeWithCafe) {
-        res
-          .status(400)
-          .json({ message: "Employee is already assigned to another cafe" });
-        return;
-      }
-    }
-
     // Create the new employee
     const newEmployee = new Employee({
       id,
@@ -55,10 +41,8 @@ export const createEmployee = async (
     const { _id, __v, ...employeeWithoutIdAndVersion } = employee.toObject();
 
     res.status(201).json(employeeWithoutIdAndVersion);
-    return;
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
-    return;
   }
 };
 
@@ -102,54 +86,53 @@ export const updateEmployee = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cafeId, ...updateData } = req.body;
+    const { cafeId }: { cafeId: string | null } = req.body;
+    const updateData = req.body;
 
-    // Find the employee by ID
-    const employee = await Employee.findById(req.params.id);
+    // Find the employee by custom 'id' field (not MongoDB '_id')
+    const employee = await Employee.findOne({ id: req.params.id });
     if (!employee) {
       res.status(404).json({ message: "Employee not found" });
+      return;
     }
 
     // Ensure 'id' field is not modified
     if (updateData.id) {
       res.status(400).json({ message: "Employee ID cannot be updated" });
+      return;
     }
 
-    // If a cafe is provided, ensure that the employee is not already assigned to another cafe
-    if (cafeId) {
+    // Handle cafe reassignment or unassignment
+    if (cafeId === null) {
+      res.status(400).json({
+        message:
+          "To remove the employee from the current cafe, please assign a new cafe or use the DELETE endpoint to delete the employee from the database.",
+      });
+      return;
+    } else if (typeof cafeId === "string") {
+      // Check if the provided cafe exists
       const cafe = await Cafe.findById(cafeId);
       if (!cafe) {
         res.status(404).json({ message: "Cafe not found" });
+        return;
       }
 
-      // Ensure the employee is not already assigned to another cafe
-      const employeeInAnotherCafe = employee
-        ? await Employee.findOne({
-            cafe: cafeId,
-            _id: { $ne: employee._id },
-          })
-        : null;
-      if (employeeInAnotherCafe) {
-        res.status(400).json({
-          message: "This employee is already assigned to another cafe",
-        });
-      }
-
-      // Update cafe association
-      if (employee && cafe) {
+      // If the cafe exists, reassign the employee
+      if (!employee.cafe || !employee.cafe.equals(cafe._id)) {
         employee.cafe = cafe._id as mongoose.Types.ObjectId;
+        employee.start_date = new Date(); // Reset start date when reassigning to a new cafe
       }
+    } else {
+      res.status(400).json({ message: "Invalid cafeId" });
+      return;
     }
 
     // Update the rest of the fields (excluding 'id')
-    if (employee) {
-      Object.assign(employee, updateData);
-    }
+    Object.assign(employee, updateData);
 
-    if (employee) {
-      await employee.save();
-    }
-    res.status(200).json(employee);
+    await employee.save();
+    const { _id, __v, ...employeeWithoutIdAndVersion } = employee.toObject();
+    res.status(200).json(employeeWithoutIdAndVersion);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }

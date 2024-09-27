@@ -6,6 +6,7 @@ export interface ICafe extends Document {
   description: string; // Description of the cafe
   location: string; // Location of the cafe
   logo?: string; // (Optional) Logo image path
+  _id: mongoose.Types.ObjectId;
 }
 
 const CafeSchema: Schema = new Schema({

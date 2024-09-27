@@ -6,8 +6,8 @@ export interface IEmployee extends Document {
   name: string;
   email_address: string;
   phone_number: string;
-  gender: "Male" | "Female"; // Only Male or Female
-  cafe: mongoose.Types.ObjectId | null; // Reference to Cafe (nullable)
+  gender: "Male" | "Female";
+  cafe: mongoose.Types.ObjectId | null;
   start_date: Date;
 }
 
@@ -42,10 +42,7 @@ const EmployeeSchema: Schema<IEmployee> = new Schema({
     ref: "Cafe",
     default: null,
   },
-  start_date: {
-    type: Date,
-    required: true,
-  },
+  start_date: { type: Date, required: true },
 });
 
 // Export the Employee model
