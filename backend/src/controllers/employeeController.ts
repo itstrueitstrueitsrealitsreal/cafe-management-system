@@ -3,10 +3,10 @@ import Employee from "../models/employee";
 import Cafe, { ICafe } from "../models/cafe";
 import mongoose from "mongoose";
 
-// Create a new employee and ensure no employee can work in two cafes
+// Create a new employee
 export const createEmployee = async (
   req: Request,
-  res: Response<any>
+  res: Response
 ): Promise<void> => {
   try {
     const {
@@ -26,7 +26,7 @@ export const createEmployee = async (
       return;
     }
 
-    // Create the new employee
+    // Create new employee
     const newEmployee = new Employee({
       id,
       name,
@@ -59,7 +59,7 @@ export const getAllEmployees = async (
   }
 };
 
-// Get a single employee by ID
+// Get a single employee by custom ID
 export const getEmployeeById = async (
   req: Request,
   res: Response
@@ -68,19 +68,17 @@ export const getEmployeeById = async (
     const employee = await Employee.findOne({ id: req.params.id }).populate(
       "cafe"
     );
-
     if (!employee) {
       res.status(404).json({ message: "Employee not found" });
       return;
     }
-
     res.json(employee);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
 };
 
-// Update an employee and handle the relationship with cafe
+// Update an employee by custom ID
 export const updateEmployee = async (
   req: Request,
   res: Response
@@ -89,7 +87,6 @@ export const updateEmployee = async (
     const { cafeId }: { cafeId: string | null } = req.body;
     const updateData = req.body;
 
-    // Find the employee by custom 'id' field (not MongoDB '_id')
     const employee = await Employee.findOne({ id: req.params.id });
     if (!employee) {
       res.status(404).json({ message: "Employee not found" });
@@ -102,32 +99,18 @@ export const updateEmployee = async (
       return;
     }
 
-    // Handle cafe reassignment or unassignment
-    if (cafeId === null) {
-      res.status(400).json({
-        message:
-          "To remove the employee from the current cafe, please assign a new cafe or use the DELETE endpoint to delete the employee from the database.",
-      });
-      return;
-    } else if (typeof cafeId === "string") {
-      // Check if the provided cafe exists
+    // Handle cafe reassignment
+    if (cafeId) {
       const cafe = await Cafe.findById(cafeId);
       if (!cafe) {
         res.status(404).json({ message: "Cafe not found" });
         return;
       }
-
-      // If the cafe exists, reassign the employee
-      if (!employee.cafe || !employee.cafe.equals(cafe._id)) {
-        employee.cafe = cafe._id as mongoose.Types.ObjectId;
-        employee.start_date = new Date(); // Reset start date when reassigning to a new cafe
-      }
-    } else {
-      res.status(400).json({ message: "Invalid cafeId" });
-      return;
+      employee.cafe = cafe._id as mongoose.Types.ObjectId;
+      employee.start_date = new Date();
     }
 
-    // Update the rest of the fields (excluding 'id')
+    // Update the rest of the fields
     Object.assign(employee, updateData);
 
     await employee.save();
@@ -138,45 +121,42 @@ export const updateEmployee = async (
   }
 };
 
-// Delete an employee
-// Delete an employee by custom 'id' field (not MongoDB '_id')
+// Delete an employee by custom ID
 export const deleteEmployee = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    // Find the employee by custom 'id' field and delete it
     const deletedEmployee = await Employee.findOneAndDelete({
       id: req.params.id,
     });
-
     if (!deletedEmployee) {
       res.status(404).json({ message: "Employee not found" });
       return;
     }
-
     res.status(200).json({ message: "Employee deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
 };
 
-// GET /employees?cafe=<cafe> - Get all employees for a given cafe or all employees
+// GET /employees?cafe=<cafeId>
 export const getEmployeesByCafe = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const cafeId = req.query.cafe as string | undefined;
+    const cafeId = req.query.cafe as string | undefined; // This should be the custom cafe ID (like cafe_001)
     let employees;
 
     if (cafeId) {
-      const cafe = await Cafe.findById(cafeId);
+      // Find the cafe by custom `id` (not `_id`)
+      const cafe = await Cafe.findOne({ id: cafeId });
       if (!cafe) {
         res.status(404).json({ message: "Cafe not found" });
+        return;
       }
-
-      employees = await Employee.find({ cafe: cafe?._id }).populate("cafe");
+      employees = await Employee.find({ cafe: cafe._id }).populate("cafe");
     } else {
       employees = await Employee.find({}).populate("cafe");
     }

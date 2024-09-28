@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Cafe from "../models/cafe";
 import Employee from "../models/employee";
+import cafe from "../models/cafe";
 
 // Create a new cafe
 export const createCafe = async (
@@ -9,6 +10,8 @@ export const createCafe = async (
 ): Promise<void> => {
   try {
     const { id, name, description, location, logo } = req.body;
+
+    // Attempt to create a new cafe
     const newCafe = new Cafe({
       id,
       name,
@@ -18,9 +21,24 @@ export const createCafe = async (
     });
 
     const cafe = await newCafe.save();
-    res.status(201).json(cafe);
+
+    // Destructure to remove __v and rename _id to uuid
+    const { _id, __v, ...cafeData } = cafe.toObject();
+    const response = { ...cafeData, uuid: _id };
+
+    res.status(201).json(response);
   } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
+    if ((error as any).code === 11000) {
+      // Handle duplicate key error (E11000) more explicitly
+      const duplicateKey = Object.keys((error as any).keyValue)[0];
+      const duplicateValue = (error as any).keyValue[duplicateKey];
+      res.status(400).json({
+        message: `A cafe with this ${duplicateKey} (${duplicateValue}) already exists. Please use a different unique identifier.`,
+      });
+    } else {
+      // Handle other types of errors
+      res.status(500).json({ error: (error as Error).message });
+    }
   }
 };
 
@@ -57,20 +75,22 @@ export const updateCafe = async (
   res: Response
 ): Promise<void> => {
   try {
-    const updatedCafe = await Cafe.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    // Find the cafe by the custom 'id' field, not '_id'
+    const updatedCafe = await Cafe.findOneAndUpdate(
+      { id: req.params.id }, // Use 'id' for lookup
+      req.body,
+      { new: true } // Return the updated document
+    );
 
     if (!updatedCafe) {
       res.status(404).json({ message: "Cafe not found" });
       return;
     }
 
-    // Destructure to remove the __v field and rename _id to uuid
-    const { __v, _id, ...cafeWithoutVersion } = updatedCafe.toObject();
-    const response = { uuid: _id, ...cafeWithoutVersion };
+    // Destructure to remove '_id' and '__v' fields
+    const { _id, __v, ...cafeWithoutVersion } = updatedCafe.toObject();
 
-    res.status(200).json(response);
+    res.status(200).json(cafeWithoutVersion);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -82,16 +102,15 @@ export const deleteCafe = async (
   res: Response
 ): Promise<void> => {
   try {
-    const cafe = await Cafe.findById(req.params.id);
+    const cafe = await Cafe.findOne({ id: req.params.id }); // Find by custom UUID
 
     if (!cafe) {
       res.status(404).json({ message: "Cafe not found" });
       return;
     }
 
-    await Employee.deleteMany({ cafe: cafe._id });
-
-    await Cafe.findByIdAndDelete(req.params.id);
+    await Employee.deleteMany({ cafe: cafe._id }); // Remove all employees associated with this cafe
+    await Cafe.findOneAndDelete({ id: req.params.id }); // Delete the cafe by UUID
 
     res
       .status(200)
@@ -100,7 +119,6 @@ export const deleteCafe = async (
     res.status(500).json({ error: (error as Error).message });
   }
 };
-
 // GET /cafes?location=<location>
 export const getCafesByLocation = async (
   req: Request,
@@ -110,12 +128,9 @@ export const getCafesByLocation = async (
     const location = req.query.location as string | undefined;
 
     let cafes;
-
     if (location) {
-      // Filter cafes by location if provided
       cafes = await Cafe.find({ location });
     } else {
-      // Get all cafes if no location is provided
       cafes = await Cafe.find({});
     }
 
@@ -129,14 +144,12 @@ export const getCafesByLocation = async (
           employees: employeeCount,
           logo: cafe.logo,
           location: cafe.location,
-          uuid: cafe._id,
+          id: cafe.id, // Use the custom UUID instead of MongoDB's default _id
         };
       })
     );
 
-    // Sort by the number of employees in descending order
     cafesWithEmployeeCount.sort((a, b) => b.employees - a.employees);
-
     res.json(cafesWithEmployeeCount);
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });

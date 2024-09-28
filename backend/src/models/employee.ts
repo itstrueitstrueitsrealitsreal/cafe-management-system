@@ -46,5 +46,4 @@ const EmployeeSchema: Schema<IEmployee> = new Schema({
   start_date: { type: Date, required: true },
 });
 
-// Export the Employee model
 export default mongoose.model<IEmployee>("Employee", EmployeeSchema);
