@@ -38,9 +38,16 @@ docker-compose.override.yml
 
 Procfile
 
-# Elastic Beanstalk Files
-/.elasticbeanstalk
-**/.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
-.elasticbeanstalk/
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
