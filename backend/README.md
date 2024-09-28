@@ -251,17 +251,17 @@ npm start
 
 Alternatively, you can do so using Docker.
 
-````sh
 1. Build the Docker image:
-    ```sh
-    docker build -t cafe-management-backend .
-    ```
+
+   ```sh
+   docker build -t cafe-management-backend .
+   ```
 
 2. Run the Docker container:
-    ```sh
-    docker run -d -p 3000:3000 --env-file .env cafe-management-backend
-    ```
-````
+
+   ```sh
+   docker run -d -p 3000:3000 --env-file .env cafe-management-backend
+   ```
 
 The server will start on the port specified in your `.env` file.
 

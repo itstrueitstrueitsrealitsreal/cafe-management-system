@@ -13,12 +13,18 @@ This is a template for creating applications using Vite and NextUI (v2).
 - [TypeScript](https://www.typescriptlang.org)
 - [Framer Motion](https://www.framer.com/motion)
 
+## Features
+
+- **Cafe Management**: View, create, edit, and delete cafes.
+- **Employee Management**: Manage employees associated with specific cafes.
+- **API Integration**: Communicates with the backend API for data operations.
+
 ## How to Use
 
 To clone the project, run the following command:
 
 ```bash
-git clone https://github.com/nextui-org/vite-template.git
+git clone https://github.com/itstrueitstrueitsrealitsreal/cafe-management-system.git
 ```
 
 ### Install dependencies
@@ -31,9 +37,25 @@ npm install
 
 ### Run the development server
 
+If you want to run the development server without Docker, run the following command:
+
 ```bash
 npm run dev
 ```
+
+If you want to run the development server using Docker, do the following:
+
+1. Build the Docker image:
+
+   ```sh
+   docker build -t cafe-management-backend .
+   ```
+
+2. Run the Docker container:
+
+   ```sh
+   docker run -d -p 3000:3000 --env-file .env cafe-management-backend
+   ```
 
 ### Setup pnpm (optional)
 

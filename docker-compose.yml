@@ -1,19 +1,36 @@
 version: "3"
 services:
+  # Backend Service
   app:
+    build:
+      context: ./backend
+    container_name: cafe-management-backend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mongo
+    volumes:
+      - ./backend:/usr/src/app
+    command: npm start
+
+  # Frontend Service
+  frontend:
     build:
       context: ./frontend
     container_name: cafe-management-frontend
     ports:
-      - "3000:3000"
-    env_file:
-      - ./frontend/.env
-    depends_on:
-      - mongo
+      - "5173:5173"
     volumes:
       - ./frontend:/usr/src/app
-    command: npm start
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - app
 
+  # MongoDB Service
   mongo:
     image: mongo:latest
     container_name: mongodb
