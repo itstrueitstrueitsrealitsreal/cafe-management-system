@@ -60,28 +60,42 @@ export const updateCafe = async (
     const updatedCafe = await Cafe.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+
     if (!updatedCafe) {
       res.status(404).json({ message: "Cafe not found" });
-    } else {
-      res.json(updatedCafe);
+      return;
     }
+
+    // Destructure to remove the __v field and rename _id to uuid
+    const { __v, _id, ...cafeWithoutVersion } = updatedCafe.toObject();
+    const response = { uuid: _id, ...cafeWithoutVersion };
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
 };
 
-// Delete a cafe
+// Delete a cafe by 'id' field and remove all employees associated with it
 export const deleteCafe = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const deletedCafe = await Cafe.findByIdAndDelete(req.params.id);
-    if (!deletedCafe) {
+    const cafe = await Cafe.findById(req.params.id); // Now using `_id`
+
+    if (!cafe) {
       res.status(404).json({ message: "Cafe not found" });
-    } else {
-      res.status(200).json({ message: "Cafe deleted successfully" });
+      return;
     }
+
+    await Employee.deleteMany({ cafe: cafe._id }); // Delete employees associated with the cafe
+
+    await Cafe.findByIdAndDelete(req.params.id); // Delete the cafe itself
+
+    res
+      .status(200)
+      .json({ message: "Cafe and its employees deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -115,7 +129,7 @@ export const getCafesByLocation = async (
           employees: employeeCount,
           logo: cafe.logo,
           location: cafe.location,
-          id: cafe._id,
+          uuid: cafe._id,
         };
       })
     );
