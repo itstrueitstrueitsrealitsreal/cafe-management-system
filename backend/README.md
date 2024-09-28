@@ -10,18 +10,24 @@ This is the backend for the Cafe Management System, built with Node.js, Express,
   - [Cafe Endpoints](#cafe-endpoints)
   - [Employee Endpoints](#employee-endpoints)
 - [Usage](#usage)
+- [Seeding the Database](#seeding-the-database)
 
 ## Installation
 
 1. Clone the repository:
+
    ```sh
    git clone https://github.com/itstrueitstrueitsrealitsreal/cafe-management-system.git
    ```
+
 2. Navigate to the backend directory:
+
    ```sh
    cd cafe-management-system/backend
    ```
+
 3. Install the dependencies:
+
    ```sh
    npm install
    ```
@@ -43,10 +49,11 @@ MONGO_URI=your_mongodb_uri
   - **Query Parameters**:
     - `location` (optional): Filter cafes by their location.
   - **Response**:
+
     ```json
     [
       {
-        "uuid": "66f742ba500076158723157d",
+        "uuid": "cafe_001",
         "name": "Downtown Cafe",
         "description": "A cozy cafe in the city center",
         "employees": 5,
@@ -59,6 +66,7 @@ MONGO_URI=your_mongodb_uri
 - `POST /cafes`: Create a new cafe. The cafe `id` must be unique, and all required fields must be provided.
 
   - **Request Body**:
+
     ```json
     {
       "uuid": "cafe_001",
@@ -68,10 +76,12 @@ MONGO_URI=your_mongodb_uri
       "logo": "logo1.png"
     }
     ```
+
   - **Response**:
+
     ```json
     {
-      "uuid": "66f742ba500076158723157d",
+      "uuid": "cafe_001",
       "name": "Downtown Cafe",
       "description": "A cozy cafe in the city center",
       "location": "123 Main St, Cityville",
@@ -82,9 +92,10 @@ MONGO_URI=your_mongodb_uri
 - `GET /cafes/:id`: Get details of a specific cafe by its ID (UUID). Returns the details of the requested cafe.
 
   - **Response**:
+
     ```json
     {
-      "uuid": "66f742ba500076158723157d",
+      "uuid": "cafe_001",
       "name": "Downtown Cafe",
       "description": "A cozy cafe in the city center",
       "location": "123 Main St, Cityville",
@@ -95,6 +106,7 @@ MONGO_URI=your_mongodb_uri
 - `PUT /cafes/:id`: Update a specific cafe by its ID. The request body should include the fields you want to update.
 
   - **Request Body**:
+
     ```json
     {
       "name": "Updated Cafe Name",
@@ -103,10 +115,12 @@ MONGO_URI=your_mongodb_uri
       "logo": "newlogo.png"
     }
     ```
+
   - **Response**:
+
     ```json
     {
-      "uuid": "66f742ba500076158723157d",
+      "uuid": "cafe_001",
       "name": "Updated Cafe Name",
       "description": "Updated description",
       "location": "456 New St, Cityville",
@@ -115,7 +129,9 @@ MONGO_URI=your_mongodb_uri
     ```
 
 - `DELETE /cafes/:id`: Delete a specific cafe by its ID (UUID). All employees associated with this cafe are also deleted.
+
   - **Response**:
+
     ```json
     {
       "message": "Cafe and its employees deleted successfully"
@@ -129,6 +145,7 @@ MONGO_URI=your_mongodb_uri
   - **Query Parameters**:
     - `cafe` (optional): Filter employees by their associated cafe using the cafe UUID.
   - **Response**:
+
     ```json
     [
       {
@@ -145,6 +162,7 @@ MONGO_URI=your_mongodb_uri
 - `POST /employees`: Create a new employee and associate them with a cafe. The employee `id` must be unique, and all required fields must be provided.
 
   - **Request Body**:
+
     ```json
     {
       "id": "UI0000002",
@@ -152,11 +170,13 @@ MONGO_URI=your_mongodb_uri
       "email_address": "janesmith@example.com",
       "phone_number": "81234567",
       "gender": "Female",
-      "cafeId": "66f742ba500076158723157d",
+      "cafeId": "cafe_001",
       "start_date": "2023-09-25"
     }
     ```
+
   - **Response**:
+
     ```json
     {
       "id": "UI0000002",
@@ -164,7 +184,7 @@ MONGO_URI=your_mongodb_uri
       "email_address": "janesmith@example.com",
       "phone_number": "81234567",
       "gender": "Female",
-      "cafe": "66f742ba500076158723157d",
+      "cafe": "cafe_001",
       "start_date": "2023-09-25T00:00:00.000Z"
     }
     ```
@@ -172,6 +192,7 @@ MONGO_URI=your_mongodb_uri
 - `GET /employees/:id`: Get details of a specific employee by their custom `id` field. The `id` is a unique identifier (e.g., `UI0000001`).
 
   - **Response**:
+
     ```json
     {
       "id": "UI0000001",
@@ -187,15 +208,18 @@ MONGO_URI=your_mongodb_uri
 - `PUT /employees/:id`: Update a specific employee by their custom `id`. The request body should include the fields you want to update. You can also reassign the employee to a different cafe by providing a new `cafeId`.
 
   - **Request Body**:
+
     ```json
     {
       "name": "Updated Name",
       "email_address": "updated@example.com",
       "phone_number": "92345678",
-      "cafeId": "66f742ba500076158723157e"
+      "cafeId": "cafe_002"
     }
     ```
+
   - **Response**:
+
     ```json
     {
       "id": "UI000001",
@@ -208,7 +232,9 @@ MONGO_URI=your_mongodb_uri
     ```
 
 - `DELETE /employees/:id`: Delete a specific employee by their custom `id` field. The employee is completely removed from the database.
+
   - **Response**:
+
     ```json
     {
       "message": "Employee deleted successfully"
@@ -238,3 +264,11 @@ Alternatively, you can do so using Docker.
 ````
 
 The server will start on the port specified in your `.env` file.
+
+## Seeding the Database
+
+1. Ensure you have set the `MONGO_URI` in your `.env` file with the correct MongoDB connection string.
+
+2. Run the following command to seed the database with `backend/seed.ts`, which wipes the database and seeds it with default data.
+
+3. If you wish to modify the default seed data, feel free to modify `seed.ts` to suit your needs.
