@@ -20,11 +20,10 @@ For more information, refer to the [backend README](./backend/README.md) and the
 - [Docker Setup](#docker-setup)
   - [Build and Run with Docker](#build-and-run-with-docker)
   - [Environment Variables](#environment-variables)
-- [License](#license)
 
 ## Technologies Used
 
-### Frontend:
+### Frontend
 
 - **Vite**
 - **NextUI (v2)**
@@ -32,7 +31,7 @@ For more information, refer to the [backend README](./backend/README.md) and the
 - **TypeScript**
 - **Framer Motion**
 
-### Backend:
+### Backend
 
 - **Node.js**
 - **Express**
@@ -40,7 +39,7 @@ For more information, refer to the [backend README](./backend/README.md) and the
 - **Mongoose**
 - **TypeScript**
 
-### DevOps:
+### DevOps
 
 - **Docker**
 - **Docker Compose**
@@ -72,7 +71,7 @@ cd cafe-management-system
 
 ### Running the Application
 
-#### Running with Docker:
+#### Running with Docker
 
 1. **Build the Docker images**:
 
@@ -90,25 +89,30 @@ cd cafe-management-system
    - Frontend: `http://localhost:5173`
    - Backend API: `http://localhost:3000`
 
-#### Running Locally:
+#### Running Locally
 
 1. **Backend**:
 
    - Navigate to the backend directory:
+
      ```bash
      cd backend
      npm install
      npm start
      ```
+
    - Ensure MongoDB is running locally or via Docker.
 
 2. **Frontend**:
+
    - Navigate to the frontend directory:
+
      ```bash
      cd frontend
      npm install
      npm run dev
      ```
+
    - Access the frontend at `http://localhost:5173`.
 
 ## API Endpoints
