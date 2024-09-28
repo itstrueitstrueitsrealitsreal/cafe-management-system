@@ -9,6 +9,7 @@ export interface IEmployee extends Document {
   gender: "Male" | "Female";
   cafe: mongoose.Types.ObjectId | null;
   start_date: Date;
+  __v?: number;
 }
 
 const EmployeeSchema: Schema<IEmployee> = new Schema({
