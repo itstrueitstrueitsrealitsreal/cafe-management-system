@@ -7,6 +7,7 @@ export interface ICafe extends Document {
   description: string;
   location: string;
   logo?: string;
+  __v?: number;
 }
 
 const CafeSchema: Schema<ICafe> = new Schema({
