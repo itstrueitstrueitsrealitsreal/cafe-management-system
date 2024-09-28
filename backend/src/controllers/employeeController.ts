@@ -33,7 +33,7 @@ export const createEmployee = async (
       email_address,
       phone_number,
       gender,
-      cafe: cafeId ? new mongoose.Types.ObjectId(cafeId) : null, // Assign cafe's ObjectId if provided
+      cafe: cafeId ? new mongoose.Types.ObjectId(cafeId) : null,
       start_date,
     });
 
@@ -202,7 +202,7 @@ export const getEmployeesByCafe = async (
         email_address: employee.email_address,
         phone_number: employee.phone_number,
         days_worked: daysWorked,
-        cafe: cafeName || "", // Return the cafe name or empty string
+        cafe: cafeName || "",
       };
     });
 

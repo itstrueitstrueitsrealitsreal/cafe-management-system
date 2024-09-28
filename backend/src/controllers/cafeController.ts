@@ -82,16 +82,16 @@ export const deleteCafe = async (
   res: Response
 ): Promise<void> => {
   try {
-    const cafe = await Cafe.findById(req.params.id); // Now using `_id`
+    const cafe = await Cafe.findById(req.params.id);
 
     if (!cafe) {
       res.status(404).json({ message: "Cafe not found" });
       return;
     }
 
-    await Employee.deleteMany({ cafe: cafe._id }); // Delete employees associated with the cafe
+    await Employee.deleteMany({ cafe: cafe._id });
 
-    await Cafe.findByIdAndDelete(req.params.id); // Delete the cafe itself
+    await Cafe.findByIdAndDelete(req.params.id);
 
     res
       .status(200)

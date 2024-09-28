@@ -37,3 +37,10 @@ package-lock.json
 docker-compose.override.yml
 
 Procfile
+
+# Elastic Beanstalk Files
+/.elasticbeanstalk
+**/.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+.elasticbeanstalk/
