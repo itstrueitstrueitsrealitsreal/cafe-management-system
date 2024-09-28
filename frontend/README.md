@@ -1,8 +1,6 @@
-# Vite & NextUI Template
+# Cafe Management System Frontend
 
-This is a template for creating applications using Vite and NextUI (v2).
-
-[Try it on CodeSandbox](https://githubbox.com/nextui-org/vite-template)
+This is the documentation for the subdirectory which houses the frontend code of this Cafe Management project. It communicates with the backend at https://cafe-management-system-bv4j.onrender.com.
 
 ## Technologies Used
 

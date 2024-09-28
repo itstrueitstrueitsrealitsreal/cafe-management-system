@@ -1,6 +1,6 @@
 # Cafe Management System Backend
 
-This is the backend for the Cafe Management System, built with Node.js, Express, and MongoDB. It handles CRUD operations for cafes and employees, with a relationship between the two. The application is deployed using MongoDB and supports multiple API endpoints to manage cafes and employees.
+This is the backend for the Cafe Management System, built with Node.js, Express, and MongoDB. It handles CRUD operations for cafes and employees, with a relationship between the two. The application is deployed using MongoDB and supports multiple API endpoints to manage cafes and employees. It is currently being hosted at https://cafe-management-system-bv4j.onrender.com.
 
 ## Table of Contents
 
