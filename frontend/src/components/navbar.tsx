@@ -29,6 +29,7 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">Cafe Management System</p>
           </Link>
         </NavbarBrand>
+        {/* Desktop menu items (visible on large screens) */}
         <div className="hidden lg:flex gap-4 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
@@ -56,15 +57,18 @@ export const Navbar = () => {
             <GithubIcon className="text-default-500" />
           </Link>
         </NavbarItem>
+        {/* Show the NavbarMenuToggle only on smaller screens when the menu is hidden */}
+        <NavbarMenuToggle className="lg:hidden" />
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <Link isExternal href={siteConfig.links.github}>
           <GithubIcon className="text-default-500" />
         </Link>
-        <NavbarMenuToggle />
+        <NavbarMenuToggle className="lg:hidden" />
       </NavbarContent>
 
+      {/* Navbar menu for mobile view */}
       <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {siteConfig.navMenuItems.map((item, index) => (
