@@ -3,6 +3,7 @@ export type SiteConfig = typeof siteConfig;
 export const siteConfig = {
   name: "Vite + NextUI",
   description: "Make beautiful websites regardless of your design experience.",
+
   navItems: [
     {
       label: "Home",
@@ -24,7 +25,17 @@ export const siteConfig = {
       label: "About",
       href: "/about",
     },
+    // Adding cafe routes
+    {
+      label: "Cafes",
+      href: "/cafes",
+    },
+    {
+      label: "Employees",
+      href: "/employees",
+    },
   ],
+
   navMenuItems: [
     {
       label: "Profile",
@@ -58,7 +69,17 @@ export const siteConfig = {
       label: "Logout",
       href: "/logout",
     },
+    // Adding more specific cafe-related actions
+    {
+      label: "Add Cafe",
+      href: "/cafes/add",
+    },
+    {
+      label: "Add Employee",
+      href: "/employees/add",
+    },
   ],
+
   links: {
     github: "https://github.com/nextui-org/nextui",
     twitter: "https://twitter.com/getnextui",
