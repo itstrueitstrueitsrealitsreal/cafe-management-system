@@ -1,21 +1,23 @@
-import { useState, useRef, useMemo, useCallback } from "react";
+import React, { useState, useRef, useMemo, useCallback } from "react";
 import { AgGridReact } from "ag-grid-react"; // Ag-Grid for table
 import { Button, TextField, CircularProgress } from "@mui/material"; // Material UI components
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Use any theme you prefer
+import { GridReadyEvent } from "ag-grid-community";
 
-import { useCafes, useDeleteCafe } from "../utils/api"; // Hooks for fetching/deleting cafes
+import { useCafes, useDeleteCafe } from "../utils/api";
 
 import DefaultLayout from "@/layouts/default";
 import { title } from "@/components/primitives";
 
 const Cafes = () => {
   const gridRef = useRef<AgGridReact>(null); // Ref for the grid component
-  const [location, setLocation] = useState(""); // State for the location filter
   const { data: cafes = [], isLoading, error } = useCafes(); // Fetch cafes data
 
-  // Store the grid API locally
-  const [gridApi, setGridApi] = useState<any>(null);
+  // State to store filter input value
+  const [filterText, setFilterText] = useState("");
+  const [gridApi, setGridApi] = useState<any>(null); // Store grid API
+  const [newRows, setNewRows] = useState<any[]>([]); // Store new rows to add
 
   // Handle deleting cafes
   const deleteCafeMutation = useDeleteCafe();
@@ -66,12 +68,32 @@ const Cafes = () => {
     []
   );
 
-  // Handle filtering based on the location input
-  const onFilterLocation = useCallback(() => {
-    if (gridApi) {
-      gridApi.setQuickFilter(location); // Correct usage of setQuickFilter on the grid API
-    }
-  }, [location, gridApi]);
+  // Handle filtering based on the search input
+  const onFilterTextBoxChanged = useCallback(() => {
+    gridRef.current!.api.setGridOption(
+      "quickFilterText",
+      (document.getElementById("filter-text-box") as HTMLInputElement).value
+    );
+  }, []);
+
+  // Bind grid API on grid ready
+  const onGridReady = useCallback((params: GridReadyEvent) => {
+    setGridApi(params.api); // Store grid API when ready
+  }, []);
+
+  // Handle adding a new row to the grid
+  const handleAddNewCafe = () => {
+    const newCafe = {
+      logo: "newLogo.png",
+      name: "New Cafe",
+      description: "New cafe description",
+      employees: 10,
+      location: "789 New Location",
+    };
+
+    // Use the grid API to update the grid with the new row
+    gridApi.updateRowData({ add: [newCafe] });
+  };
 
   if (isLoading)
     return (
@@ -97,11 +119,14 @@ const Cafes = () => {
         <div className="my-5">
           <TextField
             fullWidth
-            label="Filter by location"
-            value={location}
+            id="filter-text-box"
+            label="Filter by cafe location"
+            value={filterText}
             variant="outlined"
-            onChange={(e) => setLocation(e.target.value)} // Update location state on input change
-            onInput={onFilterLocation} // Trigger filtering on input change
+            onChange={(e) => {
+              setFilterText(e.target.value); // Update the filter input state
+            }}
+            onKeyUp={onFilterTextBoxChanged} // Trigger filtering based on input
           />
         </div>
 
@@ -115,18 +140,15 @@ const Cafes = () => {
             columnDefs={columns}
             defaultColDef={{ flex: 1, editable: true }}
             rowData={cafes}
-            onGridReady={(params) => {
-              setGridApi(params.api); // Store the grid API when grid is ready
-            }}
+            onGridReady={onGridReady} // Initialize grid API
           />
         </div>
 
-        {/* Add New Cafe Button */}
         <Button
           className="my-5"
-          color="primary"
+          color="info"
           variant="contained"
-          onClick={() => console.log("Navigate to add cafe page")}
+          onClick={handleAddNewCafe} // Add new row on button click
         >
           Add New Cafe
         </Button>
