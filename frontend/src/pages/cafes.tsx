@@ -1,9 +1,10 @@
-import React, { useState, useRef, useMemo, useCallback } from "react";
+import { useState, useRef, useMemo, useCallback } from "react";
 import { AgGridReact } from "ag-grid-react"; // Ag-Grid for table
 import { Button, TextField, CircularProgress } from "@mui/material"; // Material UI components
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Use any theme you prefer
 import { GridReadyEvent } from "ag-grid-community";
+import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
 
 import { useCafes, useDeleteCafe } from "../utils/api";
 
@@ -13,11 +14,9 @@ import { title } from "@/components/primitives";
 const Cafes = () => {
   const gridRef = useRef<AgGridReact>(null); // Ref for the grid component
   const { data: cafes = [], isLoading, error } = useCafes(); // Fetch cafes data
-
-  // State to store filter input value
   const [filterText, setFilterText] = useState("");
   const [gridApi, setGridApi] = useState<any>(null); // Store grid API
-  const [newRows, setNewRows] = useState<any[]>([]); // Store new rows to add
+  const navigate = useNavigate(); // Initialize the navigate hook
 
   // Handle deleting cafes
   const deleteCafeMutation = useDeleteCafe();
@@ -26,11 +25,23 @@ const Cafes = () => {
     deleteCafeMutation.mutate(id, {
       onSuccess: () => {
         alert("Cafe deleted successfully");
+        const updatedRows = cafes.filter((cafe) => cafe.id !== id); // Filter out deleted row
+        gridApi.setRowData(updatedRows); // Update grid with remaining rows
       },
       onError: (err) => {
         console.error("Error deleting cafe:", err.message);
       },
     });
+  };
+
+  // Handle navigating to the edit cafe page
+  const handleEdit = (id: string) => {
+    navigate(`/cafes/${id}`); // Navigate to the edit page for the selected cafe
+  };
+
+  // Handle navigating to the add new cafe page
+  const handleAddNewCafe = () => {
+    navigate("/cafes/new"); // Navigate to the add new cafe page
   };
 
   // Define columns for ag-Grid
@@ -44,28 +55,31 @@ const Cafes = () => {
       {
         headerName: "Actions",
         field: "actions",
-        cellRendererFramework: (params: any) => (
-          <>
-            <Button
-              className="mr-2"
-              color="primary"
-              variant="contained"
-              onClick={() => console.log("Edit cafe", params.data.id)}
-            >
-              Edit
-            </Button>
-            <Button
-              color="error"
-              variant="contained"
-              onClick={() => handleDelete(params.data.id)}
-            >
-              Delete
-            </Button>
-          </>
-        ),
+        cellRenderer: (params: any) => {
+          return (
+            <div className="flex gap-2">
+              <Button
+                className="my-5"
+                color="primary"
+                variant="contained"
+                onClick={() => handleEdit(params.data.id)} // Navigate to edit page
+              >
+                Edit
+              </Button>
+              <Button
+                className="my-5"
+                color="error"
+                variant="contained"
+                onClick={() => handleDelete(params.data.id)} // Handle Delete
+              >
+                Delete
+              </Button>
+            </div>
+          );
+        },
       },
     ],
-    []
+    [cafes, gridApi]
   );
 
   // Handle filtering based on the search input
@@ -80,20 +94,6 @@ const Cafes = () => {
   const onGridReady = useCallback((params: GridReadyEvent) => {
     setGridApi(params.api); // Store grid API when ready
   }, []);
-
-  // Handle adding a new row to the grid
-  const handleAddNewCafe = () => {
-    const newCafe = {
-      logo: "newLogo.png",
-      name: "New Cafe",
-      description: "New cafe description",
-      employees: 10,
-      location: "789 New Location",
-    };
-
-    // Use the grid API to update the grid with the new row
-    gridApi.updateRowData({ add: [newCafe] });
-  };
 
   if (isLoading)
     return (
@@ -148,7 +148,7 @@ const Cafes = () => {
           className="my-5"
           color="info"
           variant="contained"
-          onClick={handleAddNewCafe} // Add new row on button click
+          onClick={handleAddNewCafe} // Navigate to the add new cafe page
         >
           Add New Cafe
         </Button>

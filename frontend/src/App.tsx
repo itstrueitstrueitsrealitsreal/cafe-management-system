@@ -22,12 +22,12 @@ function App() {
       {/* Cafes-related routes */}
       <Route element={<CafesPage />} path="/cafes" />
       <Route element={<AddEditCafePage />} path="/cafes/new" />
-      <Route element={<AddEditCafePage />} path="/cafes/:id" />{" "}
+      <Route element={<AddEditCafePage />} path="/cafes/:id" />
       {/* For editing a specific cafe */}
       {/* Employees-related routes */}
       <Route element={<Employees />} path="/employees" />
       <Route element={<AddEditEmployeePage />} path="/employees/new" />
-      <Route element={<AddEditEmployeePage />} path="/employees/:id" />{" "}
+      <Route element={<AddEditEmployeePage />} path="/employees/:id" />
       {/* For editing a specific employee */}
     </Routes>
   );
