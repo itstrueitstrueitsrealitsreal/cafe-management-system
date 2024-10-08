@@ -17,7 +17,7 @@ router.post("/", createEmployee);
 router.get("/", getEmployeesByCafe); // If `cafeId` is present, it filters by café; otherwise, it returns all employees
 
 // GET - Get all employees without any filter
-router.get("/all", getAllEmployees);
+router.get("/", getAllEmployees);
 
 // GET - Get a specific employee by ID
 router.get("/:id", getEmployeeById);

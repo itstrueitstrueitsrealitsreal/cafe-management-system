@@ -3,38 +3,51 @@ import Employee from "../models/employee";
 import Cafe, { ICafe } from "../models/cafe";
 import mongoose from "mongoose";
 
+// Helper function to generate a new employee ID
+const generateNewEmployeeId = async (): Promise<string> => {
+  const lastEmployee = await Employee.findOne().sort({ id: -1 }).lean();
+
+  if (!lastEmployee) {
+    // If no employees exist, start from 'UI0000001'
+    return "UI0000001";
+  }
+
+  // Extract the numeric part of the last employee's ID
+  const lastIdNumber = parseInt(lastEmployee.id.slice(2), 10);
+
+  // Increment the ID number
+  const newIdNumber = lastIdNumber + 1;
+
+  // Pad the new number with leading zeros to maintain the format 'UIXXXXXXX'
+  const newId = `UI${newIdNumber.toString().padStart(7, "0")}`;
+
+  return newId;
+};
+
 // Create a new employee
 export const createEmployee = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const {
-      id,
-      name,
-      email_address,
-      phone_number,
-      gender,
-      cafeId,
-      start_date,
-    } = req.body;
-
-    // Check if an employee with this ID already exists
-    const existingEmployee = await Employee.findOne({ id });
-    if (existingEmployee) {
-      res.status(400).json({ message: "Employee with this ID already exists" });
-      return;
+    const { name, email_address, phone_number, gender, cafeId } = req.body;
+    const cafe = await Cafe.findOne({ id: cafeId });
+    if (!cafe) {
+      throw new Error("Cafe not found");
     }
+
+    // Generate a new employee ID (auto-increment)
+    const newId = await generateNewEmployeeId();
 
     // Create new employee
     const newEmployee = new Employee({
-      id,
+      id: newId, // Use the generated ID
       name,
       email_address,
       phone_number,
       gender,
-      cafe: cafeId ? new mongoose.Types.ObjectId(cafeId) : null,
-      start_date,
+      cafe: cafe.id,
+      start_date: new Date(), // Use today's date
     });
 
     const employee = await newEmployee.save();
@@ -101,12 +114,12 @@ export const updateEmployee = async (
 
     // Handle cafe reassignment
     if (cafeId) {
-      const cafe = await Cafe.findById(cafeId);
+      const cafe = await Cafe.findOne({ id: cafeId }).lean();
       if (!cafe) {
         res.status(404).json({ message: "Cafe not found" });
         return;
       }
-      employee.cafe = cafe._id as mongoose.Types.ObjectId;
+      employee.cafe = cafe.id;
       employee.start_date = new Date();
     }
 
@@ -146,35 +159,47 @@ export const getEmployeesByCafe = async (
   res: Response
 ): Promise<void> => {
   try {
-    const cafeId = req.query.cafe as string | undefined; // This should be the custom cafe ID (like cafe_001)
+    const cafeId = req.query.cafe as string;
     let employees;
+    let cafeMap: { [key: string]: string } = {}; // Map to store cafeId and cafeName
 
     if (cafeId) {
-      // Find the cafe by custom `id` (not `_id`)
-      const cafe = await Cafe.findOne({ id: cafeId });
+      // Find employees for the specific cafe using the custom cafe id
+      employees = await Employee.find({ cafe: cafeId }).lean();
+      if (!employees.length) {
+        res.status(404).json({ message: "No employees found for the cafe" });
+        return;
+      }
+
+      // Find the cafe by custom id to get its name
+      const cafe = await Cafe.findOne({ id: cafeId }).lean();
       if (!cafe) {
         res.status(404).json({ message: "Cafe not found" });
         return;
       }
-      employees = await Employee.find({ cafe: cafe._id }).populate("cafe");
+      // Add the cafe name to the map
+      cafeMap[cafeId] = cafe.name;
     } else {
-      employees = await Employee.find({}).populate("cafe");
+      // Get all employees if no cafeId is provided
+      employees = await Employee.find({}).lean();
+
+      // Find all unique cafes from employees
+      const cafeIds = employees.map((employee) => employee.cafe);
+      const cafes = await Cafe.find({ id: { $in: cafeIds } }).lean();
+
+      // Create a map of cafeId to cafeName
+      cafes.forEach((cafe) => {
+        cafeMap[cafe.id] = cafe.name;
+      });
     }
 
-    // Calculate the number of days worked for each employee
+    // Calculate the number of days worked for each employee and attach cafe name
     const currentDate = new Date();
     const employeesWithDaysWorked = employees.map((employee) => {
       const daysWorked = Math.floor(
-        (currentDate.getTime() - employee.start_date.getTime()) /
+        (currentDate.getTime() - new Date(employee.start_date).getTime()) /
           (1000 * 60 * 60 * 24)
       );
-
-      const cafeName =
-        employee.cafe &&
-        typeof employee.cafe === "object" &&
-        "name" in employee.cafe
-          ? (employee.cafe as unknown as ICafe).name
-          : "";
 
       return {
         id: employee.id,
@@ -182,7 +207,7 @@ export const getEmployeesByCafe = async (
         email_address: employee.email_address,
         phone_number: employee.phone_number,
         days_worked: daysWorked,
-        cafe: cafeName || "",
+        cafe: cafeMap[employee.cafe], // Return cafe name
       };
     });
 

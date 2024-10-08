@@ -79,7 +79,6 @@ export const useAddCafe = () => {
       name: string;
       description: string;
       location: string;
-      logo?: string;
     }) => {
       try {
         const res = await fetch(`/api/cafes`, {
@@ -152,33 +151,19 @@ export const useUpdateCafe = () => {
       cafe,
     }: {
       id: string;
-      cafe:
-        | FormData
-        | {
-            name: string;
-            description: string;
-            location: string;
-            logo?: string;
-          };
+      cafe: {
+        name: string;
+        description: string;
+        location: string;
+      };
     }) => {
-      let options: RequestInit;
-
-      if (cafe instanceof FormData) {
-        // If cafe is FormData (logo is a file)
-        options = {
-          method: "PUT",
-          body: cafe,
-        };
-      } else {
-        // If cafe is a JSON object (logo is a string)
-        options = {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(cafe),
-        };
-      }
+      const options: RequestInit = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cafe),
+      };
 
       const res = await fetch(`/api/cafes/${id}`, options);
 

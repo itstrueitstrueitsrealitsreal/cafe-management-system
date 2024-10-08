@@ -12,14 +12,12 @@ const cafesData = [
     name: "Downtown Cafe",
     description: "A cozy cafe in the city center",
     location: "123 Main St, Cityville",
-    logo: "logo1.png",
   },
   {
     id: "cafe_002",
     name: "Uptown Cafe",
     description: "A modern cafe with great ambiance",
     location: "456 High St, Cityville",
-    logo: "logo2.png",
   },
 ];
 
@@ -30,7 +28,7 @@ const employeesData: {
   email_address: string;
   phone_number: string;
   gender: string;
-  cafe: mongoose.Types.ObjectId | null;
+  cafe: string;
   start_date: Date;
 }[] = [
   {
@@ -39,7 +37,7 @@ const employeesData: {
     email_address: "johndoe@example.com",
     phone_number: "91234567",
     gender: "Male",
-    cafe: null,
+    cafe: "cafe_001",
     start_date: new Date("2023-01-01"),
   },
   {
@@ -48,7 +46,7 @@ const employeesData: {
     email_address: "janesmith@example.com",
     phone_number: "81234567",
     gender: "Female",
-    cafe: null,
+    cafe: "cafe_002",
     start_date: new Date("2023-05-15"),
   },
 ];
@@ -95,8 +93,8 @@ const seedDatabase = async () => {
     })[];
 
     // Assign cafe IDs to employees
-    employeesData[0].cafe = cafes[0]._id;
-    employeesData[1].cafe = cafes[1]._id;
+    employeesData[0].cafe = cafes[0].id;
+    employeesData[1].cafe = cafes[1].id;
 
     // Insert employees
     await Employee.insertMany(employeesData);

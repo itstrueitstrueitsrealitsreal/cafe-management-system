@@ -6,7 +6,6 @@ export interface ICafe extends Document {
   name: string;
   description: string;
   location: string;
-  logo?: string;
   __v?: number;
 }
 
@@ -15,7 +14,6 @@ const CafeSchema: Schema<ICafe> = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true, maxlength: 256 },
   location: { type: String, required: true },
-  logo: { type: String },
 });
 
 export default mongoose.model<ICafe>("Cafe", CafeSchema);

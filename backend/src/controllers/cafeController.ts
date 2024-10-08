@@ -10,7 +10,7 @@ export const createCafe = async (
 ): Promise<void> => {
   try {
     // Destructure and check if id is provided
-    let { id, name, description, location, logo } = req.body;
+    let { id, name, description, location } = req.body;
 
     // If no id is provided by the user, generate a UUID
     if (!id) {
@@ -23,7 +23,6 @@ export const createCafe = async (
       name,
       description,
       location,
-      logo,
     });
 
     const cafe = await newCafe.save();
@@ -49,16 +48,7 @@ export const createCafe = async (
   }
 };
 
-// Get all cafes
-export const getCafes = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const cafes = await Cafe.find();
-    res.json(cafes);
-  } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
-  }
-};
-
+// // Get all cafes
 // Get a cafe by ID
 export const getCafeById = async (
   req: Request,
@@ -116,7 +106,7 @@ export const deleteCafe = async (
       return;
     }
 
-    await Employee.deleteMany({ cafe: cafe._id }); // Remove all employees associated with this cafe
+    await Employee.deleteMany({ cafe: cafe.id }); // Remove all employees associated with this cafe
     await Cafe.findOneAndDelete({ id: req.params.id }); // Delete the cafe by UUID
 
     res
@@ -144,12 +134,11 @@ export const getCafesByLocation = async (
     // Calculate the number of employees for each cafe
     const cafesWithEmployeeCount = await Promise.all(
       cafes.map(async (cafe) => {
-        const employeeCount = await Employee.countDocuments({ cafe: cafe._id });
+        const employeeCount = await Employee.countDocuments({ cafe: cafe.id });
         return {
           name: cafe.name,
           description: cafe.description,
           employees: employeeCount,
-          logo: cafe.logo,
           location: cafe.location,
           id: cafe.id, // Use the custom UUID instead of MongoDB's default _id
         };

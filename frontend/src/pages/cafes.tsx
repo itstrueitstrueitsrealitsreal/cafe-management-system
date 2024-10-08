@@ -48,7 +48,6 @@ const Cafes = () => {
   // Define columns for ag-Grid
   const columns = useMemo(
     () => [
-      { headerName: "Logo", field: "logo" },
       { headerName: "Name", field: "name" },
       { headerName: "Description", field: "description" },
       {

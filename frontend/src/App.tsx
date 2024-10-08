@@ -7,7 +7,7 @@ import BlogPage from "@/pages/blog";
 import AboutPage from "@/pages/about";
 import CafesPage from "@/pages/cafes";
 import Employees from "@/pages/employees";
-import AddEditCafePage from "@/pages/addeditcafe";
+import AddEditCafe from "@/pages/addeditcafe";
 import AddEditEmployeePage from "@/pages/addeditemployee";
 
 function App() {
@@ -21,8 +21,8 @@ function App() {
       <Route element={<AboutPage />} path="/about" />
       {/* Cafes-related routes */}
       <Route element={<CafesPage />} path="/cafes" />
-      <Route element={<AddEditCafePage />} path="/cafes/new" />
-      <Route element={<AddEditCafePage />} path="/cafes/:id" />
+      <Route element={<AddEditCafe />} path="/cafes/new" />
+      <Route element={<AddEditCafe />} path="/cafes/:id" />
       {/* For editing a specific cafe */}
       {/* Employees-related routes */}
       <Route element={<Employees />} path="/employees" />

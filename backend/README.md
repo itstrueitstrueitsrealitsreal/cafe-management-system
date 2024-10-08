@@ -57,8 +57,7 @@ MONGO_URI=your_mongodb_uri
         "name": "Downtown Cafe",
         "description": "A cozy cafe in the city center",
         "employees": 5,
-        "location": "123 Main St, Cityville",
-        "logo": "logo1.png"
+        "location": "123 Main St, Cityville"
       }
     ]
     ```
@@ -72,8 +71,7 @@ MONGO_URI=your_mongodb_uri
       "uuid": "cafe_001",
       "name": "Downtown Cafe",
       "description": "A cozy cafe in the city center",
-      "location": "123 Main St, Cityville",
-      "logo": "logo1.png"
+      "location": "123 Main St, Cityville"
     }
     ```
 
@@ -84,8 +82,7 @@ MONGO_URI=your_mongodb_uri
       "uuid": "cafe_001",
       "name": "Downtown Cafe",
       "description": "A cozy cafe in the city center",
-      "location": "123 Main St, Cityville",
-      "logo": "logo1.png"
+      "location": "123 Main St, Cityville"
     }
     ```
 
@@ -98,8 +95,7 @@ MONGO_URI=your_mongodb_uri
       "uuid": "cafe_001",
       "name": "Downtown Cafe",
       "description": "A cozy cafe in the city center",
-      "location": "123 Main St, Cityville",
-      "logo": "logo1.png"
+      "location": "123 Main St, Cityville"
     }
     ```
 
@@ -111,8 +107,7 @@ MONGO_URI=your_mongodb_uri
     {
       "name": "Updated Cafe Name",
       "description": "Updated description",
-      "location": "456 New St, Cityville",
-      "logo": "newlogo.png"
+      "location": "456 New St, Cityville"
     }
     ```
 
@@ -123,8 +118,7 @@ MONGO_URI=your_mongodb_uri
       "uuid": "cafe_001",
       "name": "Updated Cafe Name",
       "description": "Updated description",
-      "location": "456 New St, Cityville",
-      "logo": "newlogo.png"
+      "location": "456 New St, Cityville"
     }
     ```
 
