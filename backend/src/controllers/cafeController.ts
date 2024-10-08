@@ -2,18 +2,24 @@ import { Request, Response } from "express";
 import Cafe from "../models/cafe";
 import Employee from "../models/employee";
 import cafe from "../models/cafe";
+import { v4 as uuidv4 } from "uuid";
 
-// Create a new cafe
 export const createCafe = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const { id, name, description, location, logo } = req.body;
+    // Destructure and check if id is provided
+    let { id, name, description, location, logo } = req.body;
+
+    // If no id is provided by the user, generate a UUID
+    if (!id) {
+      id = uuidv4();
+    }
 
     // Attempt to create a new cafe
     const newCafe = new Cafe({
-      id,
+      id, // Use either the user-provided id or the generated UUID
       name,
       description,
       location,
@@ -22,10 +28,11 @@ export const createCafe = async (
 
     const cafe = await newCafe.save();
 
-    // Destructure to remove __v and rename _id to uuid
+    // Destructure to remove __v and rename _id to uuid (optional based on your DB structure)
     const { _id, __v, ...cafeData } = cafe.toObject();
     const response = { ...cafeData, uuid: _id };
 
+    // Respond with the newly created cafe
     res.status(201).json(response);
   } catch (error) {
     if ((error as any).code === 11000) {
@@ -58,7 +65,7 @@ export const getCafeById = async (
   res: Response
 ): Promise<void> => {
   try {
-    const cafe = await Cafe.findById(req.params.id);
+    const cafe = await Cafe.findOne({ id: req.params.id });
     if (!cafe) {
       res.status(404).json({ message: "Cafe not found" });
     } else {

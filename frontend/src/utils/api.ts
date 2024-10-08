@@ -74,17 +74,37 @@ export const useAddCafe = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (cafe: FormData) => {
-      const res = await fetch(`/api/cafes`, {
-        method: "POST",
-        body: cafe, // Pass FormData directly in the body
-      });
+    mutationFn: async (cafe: {
+      name: string;
+      description: string;
+      location: string;
+      logo?: string;
+    }) => {
+      try {
+        const res = await fetch(`/api/cafes`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", // Ensure the correct header is set
+          },
+          body: JSON.stringify(cafe), // Stringify the cafe object
+        });
 
-      if (!res.ok) {
-        throw new Error(`Failed to add cafe: ${res.status}`);
+        if (!res.ok) {
+          // Log the response body text for debugging
+          const errorMessage = await res.text();
+
+          throw new Error(
+            `Failed to add cafe: ${res.status} - ${errorMessage}`
+          );
+        }
+
+        const jsonResponse = await res.json();
+
+        return jsonResponse;
+      } catch (error) {
+        // Log the error in case of failure
+        throw error;
       }
-
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cafes"] });
@@ -94,7 +114,6 @@ export const useAddCafe = () => {
     },
   });
 };
-
 // Add an Employee
 export const useAddEmployee = () => {
   const queryClient = useQueryClient();
@@ -127,11 +146,40 @@ export const useUpdateCafe = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, cafe }: { id: string; cafe: FormData }) => {
-      const res = await fetch(`/api/cafes/${id}`, {
-        method: "PUT",
-        body: cafe, // Pass FormData directly in the body
-      });
+    mutationFn: async ({
+      id,
+      cafe,
+    }: {
+      id: string;
+      cafe:
+        | FormData
+        | {
+            name: string;
+            description: string;
+            location: string;
+            logo?: string;
+          };
+    }) => {
+      let options: RequestInit;
+
+      if (cafe instanceof FormData) {
+        // If cafe is FormData (logo is a file)
+        options = {
+          method: "PUT",
+          body: cafe,
+        };
+      } else {
+        // If cafe is a JSON object (logo is a string)
+        options = {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(cafe),
+        };
+      }
+
+      const res = await fetch(`/api/cafes/${id}`, options);
 
       if (!res.ok) {
         throw new Error(`Failed to update cafe with ID ${id}: ${res.status}`);

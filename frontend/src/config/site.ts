@@ -31,11 +31,11 @@ export const siteConfig = {
     },
     {
       label: "Add Cafe",
-      href: "/cafes/add",
+      href: "/cafes/new",
     },
     {
       label: "Add Employee",
-      href: "/employees/add",
+      href: "/employees/new",
     },
   ],
 
