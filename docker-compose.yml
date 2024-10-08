@@ -1,6 +1,5 @@
 version: "3"
 services:
-  # Backend Service
   app:
     build:
       context: ./backend
@@ -15,7 +14,6 @@ services:
       - ./backend:/usr/src/app
     command: npm start
 
-  # Frontend Service
   frontend:
     build:
       context: ./frontend
@@ -25,12 +23,9 @@ services:
     volumes:
       - ./frontend:/usr/src/app
     command: npm run dev
-    environment:
-      - NODE_ENV=development
     depends_on:
       - app
 
-  # MongoDB Service
   mongo:
     image: mongo:latest
     container_name: mongodb
