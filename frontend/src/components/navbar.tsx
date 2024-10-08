@@ -26,7 +26,7 @@ export const Navbar = () => {
             href="/"
           >
             <CoffeeIcon />
-            <p className="font-bold text-inherit">Cafe Management System</p>
+            <p className="font-bold text-inherit">Café Management System</p>
           </Link>
         </NavbarBrand>
         {/* Desktop menu items (visible on large screens) */}

@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Vite + NextUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "Café Management System",
+  description: "Managé your Cafés and employees with ease",
 
   navItems: [
     {
@@ -10,7 +10,7 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "Cafes",
+      label: "Cafés",
       href: "/cafes",
     },
     {
@@ -20,9 +20,9 @@ export const siteConfig = {
   ],
 
   navMenuItems: [
-    // Adding more specific cafe-related actions
+    // Adding more specific café-related actions
     {
-      label: "Cafes",
+      label: "Cafés",
       href: "/cafes",
     },
     {
@@ -30,7 +30,7 @@ export const siteConfig = {
       href: "/employees",
     },
     {
-      label: "Add Cafe",
+      label: "Add Café",
       href: "/cafes/new",
     },
     {

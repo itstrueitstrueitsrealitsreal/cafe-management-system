@@ -20,11 +20,12 @@ export const useCafes = (location: string = "") => {
 };
 
 // Fetch Employees
-export const useEmployees = () => {
-  return useQuery<Employee[]>({
-    queryKey: ["employees"],
+export const useEmployees = (cafeId?: string) => {
+  return useQuery({
+    queryKey: cafeId ? ["employees", cafeId] : ["employees"], // Unique query key based on cafeId
     queryFn: async () => {
-      const res = await fetch(`/api/employees`);
+      const url = cafeId ? `/api/employees?cafe=${cafeId}` : `/api/employees`; // Conditionally build the API URL
+      const res = await fetch(url);
 
       if (!res.ok) {
         throw new Error(`Failed to fetch employees: ${res.status}`);

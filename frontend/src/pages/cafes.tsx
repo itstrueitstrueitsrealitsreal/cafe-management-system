@@ -113,12 +113,13 @@ const Cafes = () => {
     <DefaultLayout>
       <div className="text-center pt-8">
         {/* Title */}
-        <h1 className={`${title()} mb-8`}>Cafes</h1>
+        <h1 className={`${title()} mb-8`}>Cafés</h1>
 
         {/* Search Input Box - Below the Title */}
         <div className="my-5">
           <TextField
             fullWidth
+            className="my-5"
             id="filter-text-box"
             label="Filter by cafe location"
             value={filterText}
@@ -138,7 +139,9 @@ const Cafes = () => {
           <AgGridReact
             ref={gridRef} // Attach the gridRef for accessing grid API
             columnDefs={columns}
-            defaultColDef={{ flex: 1, editable: true }}
+            defaultColDef={{ flex: 1, resizable: true }}
+            pagination={true}
+            paginationPageSize={10}
             rowData={cafes}
             onGridReady={onGridReady} // Initialize grid API
           />
