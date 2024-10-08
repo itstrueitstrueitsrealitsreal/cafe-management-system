@@ -1,6 +1,6 @@
-# Cafe Management System Frontend
+# Café Management System Frontend
 
-This is the documentation for the subdirectory which houses the frontend code of this Cafe Management project. It communicates with the backend at https://cafe-management-system-bv4j.onrender.com.
+This is the documentation for the subdirectory which houses the frontend code of this Café Management System project. It communicates with the backend at https://cafe-management-system-bv4j.onrender.com.
 
 ## Technologies Used
 

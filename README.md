@@ -1,6 +1,6 @@
-# Cafe Management System
+# Café Management System
 
-This repository contains the **Cafe Management System**, a full-stack application designed for managing cafes and their employees. The system includes a backend API and a frontend user interface, allowing for complete CRUD operations on both cafes and employees.
+This repository contains the **Café Management System**, a full-stack application designed for managing cafes and their employees. The system includes a backend API and a frontend user interface, allowing for complete CRUD operations on both cafes and employees.
 
 This project's backend is hosted [here](https://cafe-management-system-bv4j.onrender.com), and the frontend is hosted [here]().
 

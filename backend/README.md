@@ -1,274 +1,189 @@
-# Cafe Management System Backend
+# Café Management System
 
-This is the backend for the Cafe Management System, built with Node.js, Express, and MongoDB. It handles CRUD operations for cafes and employees, with a relationship between the two. The application is deployed using MongoDB and supports multiple API endpoints to manage cafes and employees. It is currently being hosted [here](https://cafe-management-system-bv4j.onrender.com).
+This repository contains the **Café Management System**, a full-stack application designed for managing cafes and their employees. The system includes a backend API and a frontend user interface, allowing for complete CRUD operations on both cafes and employees.
+
+The backend is hosted [here](https://cafe-management-system-bv4j.onrender.com), and the frontend is hosted [here]().
+
+For more information, refer to the [backend README](./backend/README.md) and the [frontend README](./frontend/README.md).
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Environment Variables](#environment-variables)
-- [Endpoints](#endpoints)
+- [Technologies Used](#technologies-used)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the Application](#running-the-application)
+- [API Endpoints](#api-endpoints)
   - [Cafe Endpoints](#cafe-endpoints)
   - [Employee Endpoints](#employee-endpoints)
-- [Usage](#usage)
-- [Seeding the Database](#seeding-the-database)
+- [Docker Setup](#docker-setup)
+  - [Build and Run with Docker](#build-and-run-with-docker)
+  - [Environment Variables](#environment-variables)
 
-## Installation
+## Technologies Used
 
-1. Clone the repository:
+### Frontend
 
-   ```sh
-   git clone https://github.com/itstrueitstrueitsrealitsreal/cafe-management-system.git
-   ```
+- **Vite**
+- **NextUI (v2)**
+- **Tailwind CSS**
+- **TypeScript**
+- **Framer Motion**
 
-2. Navigate to the backend directory:
+### Backend
 
-   ```sh
-   cd cafe-management-system/backend
-   ```
+- **Node.js**
+- **Express**
+- **MongoDB**
+- **Mongoose**
+- **TypeScript**
 
-3. Install the dependencies:
+### DevOps
 
-   ```sh
-   npm install
-   ```
+- **Docker**
+- **Docker Compose**
 
-## Environment Variables
+## Project Structure
 
-Create a `.env` file in the `./backend` directory and add the following variables:
+The project is split into two main directories:
 
-```env
-MONGO_URI=your_mongodb_uri
+```bash
+/frontend    # React frontend built with Vite and NextUI
+/backend     # Node.js backend built with Express and MongoDB
 ```
 
-## Endpoints
+## Getting Started
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
+- Node.js (if running locally)
+
+### Installation
+
+To run the project locally, first clone the repository:
+
+```bash
+git clone https://github.com/itstrueitstrueitsrealitsreal/cafe-management-system.git
+cd cafe-management-system
+```
+
+### Running the Application
+
+#### Running with Docker
+
+1. **Build the Docker images**:
+
+   ```bash
+   docker-compose build
+   ```
+
+2. **Run the containers**:
+
+   ```bash
+   docker-compose up
+   ```
+
+3. **Access the application**:
+   - Frontend: `http://localhost:5173`
+   - Backend API: `http://localhost:3000`
+
+#### Running Locally
+
+1. **Backend**:
+
+   - Navigate to the backend directory:
+
+     ```bash
+     cd backend
+     npm install
+     npm start
+     ```
+
+   - Ensure MongoDB is running locally or via Docker.
+
+2. **Frontend**:
+
+   - Navigate to the frontend directory:
+
+     ```bash
+     cd frontend
+     npm install
+     npm run dev
+     ```
+
+   - Access the frontend at `http://localhost:5173`.
+
+## API Endpoints
 
 ### Cafe Endpoints
 
-- `GET /cafes`: Get a list of all cafes. Optionally, you can filter cafes by location using a query parameter `location`. The cafes are sorted by the number of employees they have in descending order.
-
-  - **Query Parameters**:
-    - `location` (optional): Filter cafes by their location.
-  - **Response**:
-
-    ```json
-    [
-      {
-        "uuid": "cafe_001",
-        "name": "Downtown Cafe",
-        "description": "A cozy cafe in the city center",
-        "employees": 5,
-        "location": "123 Main St, Cityville",
-        "logo": "logo1.png"
-      }
-    ]
-    ```
-
-- `POST /cafes`: Create a new cafe. The cafe `id` must be unique, and all required fields must be provided.
-
-  - **Request Body**:
-
-    ```json
-    {
-      "uuid": "cafe_001",
-      "name": "Downtown Cafe",
-      "description": "A cozy cafe in the city center",
-      "location": "123 Main St, Cityville",
-      "logo": "logo1.png"
-    }
-    ```
-
-  - **Response**:
-
-    ```json
-    {
-      "uuid": "cafe_001",
-      "name": "Downtown Cafe",
-      "description": "A cozy cafe in the city center",
-      "location": "123 Main St, Cityville",
-      "logo": "logo1.png"
-    }
-    ```
-
-- `GET /cafes/:id`: Get details of a specific cafe by its ID (UUID). Returns the details of the requested cafe.
-
-  - **Response**:
-
-    ```json
-    {
-      "uuid": "cafe_001",
-      "name": "Downtown Cafe",
-      "description": "A cozy cafe in the city center",
-      "location": "123 Main St, Cityville",
-      "logo": "logo1.png"
-    }
-    ```
-
-- `PUT /cafes/:id`: Update a specific cafe by its ID. The request body should include the fields you want to update.
-
-  - **Request Body**:
-
-    ```json
-    {
-      "name": "Updated Cafe Name",
-      "description": "Updated description",
-      "location": "456 New St, Cityville",
-      "logo": "newlogo.png"
-    }
-    ```
-
-  - **Response**:
-
-    ```json
-    {
-      "uuid": "cafe_001",
-      "name": "Updated Cafe Name",
-      "description": "Updated description",
-      "location": "456 New St, Cityville",
-      "logo": "newlogo.png"
-    }
-    ```
-
-- `DELETE /cafes/:id`: Delete a specific cafe by its ID (UUID). All employees associated with this cafe are also deleted.
-
-  - **Response**:
-
-    ```json
-    {
-      "message": "Cafe and its employees deleted successfully"
-    }
-    ```
+- **GET** `/cafes`: Get a list of all cafes.
+- **POST** `/cafes`: Create a new cafe.
+- **GET** `/cafes/:id`: Get details of a specific cafe.
+- **PUT** `/cafes/:id`: Update a specific cafe.
+- **DELETE** `/cafes/:id`: Delete a specific cafe and all employees associated with it.
 
 ### Employee Endpoints
 
-- `GET /employees`: Get a list of all employees. Optionally, you can filter employees by their associated cafe using the query parameter `cafe`. The employees are sorted by the number of days they have worked in descending order.
+- **GET** `/employees`: Get a list of all employees.
+- **POST** `/employees`: Create a new employee.
+- **GET** `/employees/:id`: Get details of a specific employee.
+- **PUT** `/employees/:id`: Update a specific employee.
+- **DELETE** `/employees/:id`: Delete a specific employee.
 
-  - **Query Parameters**:
-    - `cafe` (optional): Filter employees by their associated cafe using the cafe UUID.
-  - **Response**:
+### Relationships
 
-    ```json
-    [
-      {
-        "id": "UI0000001",
-        "name": "John Doe",
-        "email_address": "johndoe@example.com",
-        "phone_number": "91234567",
-        "days_worked": 634,
-        "cafe": "Downtown Cafe"
-      }
-    ]
-    ```
+- When deleting a cafe, all employees associated with that cafe are also deleted.
+- Employees are associated with cafes through the `cafeId` field.
 
-- `POST /employees`: Create a new employee and associate them with a cafe. The employee `id` must be unique, and all required fields must be provided.
+## Docker Setup
 
-  - **Request Body**:
+The project uses **Docker Compose** to manage multiple services, including the backend (Node.js), frontend (Vite), and MongoDB database.
 
-    ```json
-    {
-      "id": "UI0000002",
-      "name": "Jane Smith",
-      "email_address": "janesmith@example.com",
-      "phone_number": "81234567",
-      "gender": "Female",
-      "cafeId": "cafe_001",
-      "start_date": "2023-09-25"
-    }
-    ```
+### Build and Run with Docker
 
-  - **Response**:
+1. **Clone the repo**:
 
-    ```json
-    {
-      "id": "UI0000002",
-      "name": "Jane Smith",
-      "email_address": "janesmith@example.com",
-      "phone_number": "81234567",
-      "gender": "Female",
-      "cafe": "cafe_001",
-      "start_date": "2023-09-25T00:00:00.000Z"
-    }
-    ```
+   ```bash
+   git clone https://github.com/itstrueitstrueitsrealitsreal/cafe-management-system.git
+   cd cafe-management-system
+   ```
 
-- `GET /employees/:id`: Get details of a specific employee by their custom `id` field. The `id` is a unique identifier (e.g., `UI0000001`).
+2. **Build the Docker images**:
 
-  - **Response**:
+   ```bash
+   docker-compose build
+   ```
 
-    ```json
-    {
-      "id": "UI0000001",
-      "name": "John Doe",
-      "email_address": "johndoe@example.com",
-      "phone_number": "91234567",
-      "gender": "Male",
-      "cafe": "Downtown Cafe",
-      "start_date": "2023-09-25T00:00:00.000Z"
-    }
-    ```
+3. **Run the services**:
 
-- `PUT /employees/:id`: Update a specific employee by their custom `id`. The request body should include the fields you want to update. You can also reassign the employee to a different cafe by providing a new `cafeId`.
+   ```bash
+   docker-compose up
+   ```
 
-  - **Request Body**:
+4. **Access the application**:
+   - Frontend: `http://localhost:5173`
+   - Backend API: `http://localhost:3000`
 
-    ```json
-    {
-      "name": "Updated Name",
-      "email_address": "updated@example.com",
-      "phone_number": "92345678",
-      "cafeId": "cafe_002"
-    }
-    ```
+### Environment Variables
 
-  - **Response**:
+The project uses `.env` files to manage configuration:
 
-    ```json
-    {
-      "id": "UI000001",
-      "name": "Updated Name",
-      "email_address": "updated@example.com",
-      "phone_number": "92345678",
-      "cafe": "Uptown Cafe",
-      "start_date": "2023-09-25T00:00:00.000Z"
-    }
-    ```
+- **Backend**: Place the `.env` file inside the `/backend` directory.
+- **Frontend**: Place the `.env` file inside the `/frontend` directory.
 
-- `DELETE /employees/:id`: Delete a specific employee by their custom `id` field. The employee is completely removed from the database.
+Sample `.env` for the backend:
 
-  - **Response**:
-
-    ```json
-    {
-      "message": "Employee deleted successfully"
-    }
-    ```
-
-## Usage
-
-To start the server without using Docker, run:
-
-```sh
-npm start
+```env
+MONGO_URI=mongodb://mongo:27017/cafe_management_system
 ```
 
-Alternatively, you can do so using Docker.
+### Additional Environment Variables
 
-1. Build the Docker image:
+You may add more environment variables to customize the behavior of the application, such as:
 
-   ```sh
-   docker build -t cafe-management-backend .
-   ```
-
-2. Run the Docker container:
-
-   ```sh
-   docker run -d -p 3000:3000 --env-file .env cafe-management-backend
-   ```
-
-The server will start on the port specified in your `.env` file.
-
-## Seeding the Database
-
-1. Ensure you have set the `MONGO_URI` in your `.env` file with the correct MongoDB connection string.
-
-2. Run the following command to seed the database with `backend/seed.ts`, which wipes the database and seeds it with default data.
-
-3. If you wish to modify the default seed data, feel free to modify `seed.ts` to suit your needs.
+- `FRONTEND_PORT`: Specify the port for the frontend.
+- `BACKEND_PORT`: Specify the port for the backend.
+- `MONGO_URI`: MongoDB connection string (used by the backend).
