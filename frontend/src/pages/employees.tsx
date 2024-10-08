@@ -7,6 +7,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useNavigate, useLocation } from "react-router-dom"; // For navigating and extracting query params
 
 import { useEmployees, useDeleteEmployee, useCafe } from "../utils/api"; // API hooks
+
 import DefaultLayout from "@/layouts/default"; // Your default layout component
 import { title } from "@/components/primitives"; // Your custom styles
 

@@ -26,6 +26,7 @@ const Cafes = () => {
       onSuccess: () => {
         alert("Cafe deleted successfully");
         const updatedRows = cafes.filter((cafe) => cafe.id !== id); // Filter out deleted row
+
         gridApi.setRowData(updatedRows); // Update grid with remaining rows
       },
       onError: (err) => {
@@ -50,7 +51,20 @@ const Cafes = () => {
       { headerName: "Logo", field: "logo" },
       { headerName: "Name", field: "name" },
       { headerName: "Description", field: "description" },
-      { headerName: "Employees", field: "employees" },
+      {
+        headerName: "Employees",
+        field: "employees",
+        cellRenderer: (params: any) => {
+          return (
+            <Button
+              color="primary"
+              onClick={() => navigate(`/employees?cafe=${params.data.id}`)}
+            >
+              {params.data.employees}
+            </Button>
+          );
+        },
+      },
       { headerName: "Location", field: "location" },
       {
         headerName: "Actions",

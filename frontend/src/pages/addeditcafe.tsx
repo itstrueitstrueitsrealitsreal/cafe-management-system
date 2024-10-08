@@ -27,6 +27,14 @@ export default function AddEditCafe() {
 
   const addCafeMutation = useAddCafe(); // Hook for adding a cafe
   const updateCafeMutation = useUpdateCafe(); // Hook for updating a cafe
+  const [hasChanges, setHasChanges] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setCafe({ ...cafe, [name]: value });
+    setHasChanges(true);
+  };
 
   const [cafe, setCafe] = useState<Cafe>({
     name: "",
@@ -44,6 +52,29 @@ export default function AddEditCafe() {
       });
     }
   }, [isEditMode, cafeData]);
+  useEffect(() => {
+    const warnUserBeforeLeaving = (e: BeforeUnloadEvent) => {
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = ""; // This is needed for older browsers.
+      }
+    };
+
+    window.addEventListener("beforeunload", warnUserBeforeLeaving);
+
+    return () =>
+      window.removeEventListener("beforeunload", warnUserBeforeLeaving);
+  }, [hasChanges]);
+
+  const handleCancel = () => {
+    if (
+      hasChanges &&
+      !window.confirm("You have unsaved changes, do you really want to leave?")
+    ) {
+      return;
+    }
+    navigate("/cafes");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,14 +90,20 @@ export default function AddEditCafe() {
       updateCafeMutation.mutate(
         { id: id!, cafe: cafeData }, // Pass the JSON data to the mutation
         {
-          onSuccess: () => navigate("/cafes"), // Redirect on success
+          onSuccess: () => {
+            setHasChanges(false);
+            navigate("/cafes");
+          },
           onError: (error) => console.error("Error updating cafe:", error),
         }
       );
     } else {
       // Add a new cafe
       addCafeMutation.mutate(cafeData, {
-        onSuccess: () => navigate("/cafes"), // Redirect on success
+        onSuccess: () => {
+          setHasChanges(false);
+          navigate("/cafes");
+        },
         onError: (error) => console.error("Error adding cafe:", error),
       });
     }
@@ -103,40 +140,51 @@ export default function AddEditCafe() {
                 <TextField
                   fullWidth
                   required
+                  helperText="Must be between 6 and 10 characters"
+                  inputProps={{ minLength: 6, maxLength: 10 }}
                   label="Cafe Name"
+                  name="name"
                   value={cafe.name}
                   variant="outlined"
-                  onChange={(e) => setCafe({ ...cafe, name: e.target.value })}
+                  onChange={handleInputChange}
                 />
                 {/* Description */}
                 <TextField
                   fullWidth
                   multiline
                   required
+                  helperText="Max 256 characters"
+                  inputProps={{ maxLength: 256 }}
                   label="Description"
+                  name="description"
                   rows={3}
                   value={cafe.description}
                   variant="outlined"
-                  onChange={(e) =>
-                    setCafe({ ...cafe, description: e.target.value })
-                  }
+                  onChange={handleInputChange}
                 />
                 {/* Location */}
                 <TextField
                   fullWidth
                   required
                   label="Location"
+                  name="location"
                   value={cafe.location}
                   variant="outlined"
-                  onChange={(e) =>
-                    setCafe({ ...cafe, location: e.target.value })
-                  }
+                  onChange={handleInputChange}
                 />
 
-                {/* Submit Button */}
-                <div className="flex justify-center mt-5">
+                {/* Submit and Cancel Buttons */}
+                <div className="flex justify-between mt-5">
                   <Button
-                    className="w-full max-w-md"
+                    className="mr-2"
+                    color="error" // Set the Cancel button to red
+                    variant="outlined"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="ml-2"
                     color="primary"
                     type="submit"
                     variant="contained"
