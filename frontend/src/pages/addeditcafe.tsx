@@ -34,11 +34,6 @@ export default function AddEditCafe() {
     location: "",
   });
 
-  // Log the fetched cafeData for debugging
-  useEffect(() => {
-    console.log("Fetched cafe data:", cafeData);
-  }, [cafeData]);
-
   // Populate the form with data if we are in edit mode and data is available
   useEffect(() => {
     if (isEditMode && cafeData) {
