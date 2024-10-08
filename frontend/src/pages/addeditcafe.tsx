@@ -9,24 +9,22 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useAddCafe, useUpdateCafe, useCafe } from "../utils/api"; // Import React Query hooks
-import { Cafe } from "../types/Cafe"; // Import the correct type
+import { useAddCafe, useUpdateCafe, useCafe } from "../utils/api";
+import { Cafe } from "../types/Cafe";
 
 import { title } from "@/components/primitives";
 import DefaultLayout from "@/layouts/default";
 
 export default function AddEditCafe() {
-  const { id } = useParams(); // Get cafe ID from URL params
-  const navigate = useNavigate(); // Hook for navigating programmatically
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  // Check if we are in edit mode or add mode
-  const isEditMode = id && id !== "new"; // true if id exists and is not "new"
+  const isEditMode = id && id !== "new";
 
-  // Fetch cafe data only if we are in edit mode
   const { data: cafeData, isLoading, error } = useCafe(isEditMode ? id : "");
 
-  const addCafeMutation = useAddCafe(); // Hook for adding a cafe
-  const updateCafeMutation = useUpdateCafe(); // Hook for updating a cafe
+  const addCafeMutation = useAddCafe();
+  const updateCafeMutation = useUpdateCafe();
   const [hasChanges, setHasChanges] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +40,6 @@ export default function AddEditCafe() {
     location: "",
   });
 
-  // Populate the form with data if we are in edit mode and data is available
   useEffect(() => {
     if (isEditMode && cafeData) {
       setCafe({
@@ -52,11 +49,12 @@ export default function AddEditCafe() {
       });
     }
   }, [isEditMode, cafeData]);
+
   useEffect(() => {
     const warnUserBeforeLeaving = (e: BeforeUnloadEvent) => {
       if (hasChanges) {
         e.preventDefault();
-        e.returnValue = ""; // This is needed for older browsers.
+        e.returnValue = "";
       }
     };
 
@@ -86,9 +84,8 @@ export default function AddEditCafe() {
     };
 
     if (isEditMode) {
-      // Update the cafe if we are in edit mode
       updateCafeMutation.mutate(
-        { id: id!, cafe: cafeData }, // Pass the JSON data to the mutation
+        { id: id!, cafe: cafeData },
         {
           onSuccess: () => {
             setHasChanges(false);
@@ -98,7 +95,6 @@ export default function AddEditCafe() {
         }
       );
     } else {
-      // Add a new cafe
       addCafeMutation.mutate(cafeData, {
         onSuccess: () => {
           setHasChanges(false);
@@ -136,7 +132,6 @@ export default function AddEditCafe() {
           <Card className="w-full max-w-2xl shadow-lg mx-auto">
             <CardContent>
               <form className="space-y-4" onSubmit={handleSubmit}>
-                {/* Cafe Name */}
                 <TextField
                   fullWidth
                   required
@@ -148,7 +143,6 @@ export default function AddEditCafe() {
                   variant="outlined"
                   onChange={handleInputChange}
                 />
-                {/* Description */}
                 <TextField
                   fullWidth
                   multiline
@@ -162,7 +156,6 @@ export default function AddEditCafe() {
                   variant="outlined"
                   onChange={handleInputChange}
                 />
-                {/* Location */}
                 <TextField
                   fullWidth
                   required
@@ -173,11 +166,10 @@ export default function AddEditCafe() {
                   onChange={handleInputChange}
                 />
 
-                {/* Submit and Cancel Buttons */}
                 <div className="flex justify-between mt-5">
                   <Button
                     className="mr-2"
-                    color="error" // Set the Cancel button to red
+                    color="error"
                     variant="outlined"
                     onClick={handleCancel}
                   >

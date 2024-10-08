@@ -20,7 +20,6 @@ export const siteConfig = {
   ],
 
   navMenuItems: [
-    // Adding more specific café-related actions
     {
       label: "Cafés",
       href: "/cafes",

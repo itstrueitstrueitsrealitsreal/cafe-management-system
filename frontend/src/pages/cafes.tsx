@@ -1,10 +1,10 @@
 import { useState, useRef, useMemo, useCallback } from "react";
-import { AgGridReact } from "ag-grid-react"; // Ag-Grid for table
-import { Button, TextField, CircularProgress } from "@mui/material"; // Material UI components
+import { AgGridReact } from "ag-grid-react";
+import { Button, TextField, CircularProgress } from "@mui/material";
 import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css"; // Use any theme you prefer
+import "ag-grid-community/styles/ag-theme-alpine.css";
 import { GridReadyEvent } from "ag-grid-community";
-import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
+import { useNavigate } from "react-router-dom";
 
 import { useCafes, useDeleteCafe } from "../utils/api";
 
@@ -12,22 +12,20 @@ import DefaultLayout from "@/layouts/default";
 import { title } from "@/components/primitives";
 
 const Cafes = () => {
-  const gridRef = useRef<AgGridReact>(null); // Ref for the grid component
-  const { data: cafes = [], isLoading, error } = useCafes(); // Fetch cafes data
+  const gridRef = useRef<AgGridReact>(null);
+  const { data: cafes = [], isLoading, error } = useCafes();
   const [filterText, setFilterText] = useState("");
-  const [gridApi, setGridApi] = useState<any>(null); // Store grid API
-  const navigate = useNavigate(); // Initialize the navigate hook
+  const [gridApi, setGridApi] = useState<any>(null);
+  const navigate = useNavigate();
 
-  // Handle deleting cafes
   const deleteCafeMutation = useDeleteCafe();
 
   const handleDelete = (id: string) => {
     deleteCafeMutation.mutate(id, {
       onSuccess: () => {
         alert("Cafe deleted successfully");
-        const updatedRows = cafes.filter((cafe) => cafe.id !== id); // Filter out deleted row
-
-        gridApi.setRowData(updatedRows); // Update grid with remaining rows
+        const updatedRows = cafes.filter((cafe) => cafe.id !== id);
+        gridApi.setRowData(updatedRows);
       },
       onError: (err) => {
         console.error("Error deleting cafe:", err.message);
@@ -35,17 +33,14 @@ const Cafes = () => {
     });
   };
 
-  // Handle navigating to the edit cafe page
   const handleEdit = (id: string) => {
-    navigate(`/cafes/${id}`); // Navigate to the edit page for the selected cafe
+    navigate(`/cafes/${id}`);
   };
 
-  // Handle navigating to the add new cafe page
   const handleAddNewCafe = () => {
-    navigate("/cafes/new"); // Navigate to the add new cafe page
+    navigate("/cafes/new");
   };
 
-  // Define columns for ag-Grid
   const columns = useMemo(
     () => [
       { headerName: "Name", field: "name" },
@@ -75,7 +70,7 @@ const Cafes = () => {
                 className="my-5"
                 color="primary"
                 variant="contained"
-                onClick={() => handleEdit(params.data.id)} // Navigate to edit page
+                onClick={() => handleEdit(params.data.id)}
               >
                 Edit
               </Button>
@@ -83,7 +78,7 @@ const Cafes = () => {
                 className="my-5"
                 color="error"
                 variant="contained"
-                onClick={() => handleDelete(params.data.id)} // Handle Delete
+                onClick={() => handleDelete(params.data.id)}
               >
                 Delete
               </Button>
@@ -95,7 +90,6 @@ const Cafes = () => {
     [cafes, gridApi]
   );
 
-  // Handle filtering based on the search input
   const onFilterTextBoxChanged = useCallback(() => {
     gridRef.current!.api.setGridOption(
       "quickFilterText",
@@ -103,9 +97,8 @@ const Cafes = () => {
     );
   }, []);
 
-  // Bind grid API on grid ready
   const onGridReady = useCallback((params: GridReadyEvent) => {
-    setGridApi(params.api); // Store grid API when ready
+    setGridApi(params.api);
   }, []);
 
   if (isLoading)
@@ -125,10 +118,7 @@ const Cafes = () => {
   return (
     <DefaultLayout>
       <div className="text-center pt-8">
-        {/* Title */}
         <h1 className={`${title()} mb-8`}>Cafés</h1>
-
-        {/* Search Input Box - Below the Title */}
         <div className="my-5">
           <TextField
             fullWidth
@@ -138,33 +128,30 @@ const Cafes = () => {
             value={filterText}
             variant="outlined"
             onChange={(e) => {
-              setFilterText(e.target.value); // Update the filter input state
+              setFilterText(e.target.value);
             }}
-            onKeyUp={onFilterTextBoxChanged} // Trigger filtering based on input
+            onKeyUp={onFilterTextBoxChanged}
           />
         </div>
-
-        {/* Cafe Table */}
         <div
           className="ag-theme-alpine my-8"
           style={{ height: "400px", width: "100%" }}
         >
           <AgGridReact
-            ref={gridRef} // Attach the gridRef for accessing grid API
+            ref={gridRef}
             columnDefs={columns}
             defaultColDef={{ flex: 1, resizable: true }}
             pagination={true}
             paginationPageSize={10}
             rowData={cafes}
-            onGridReady={onGridReady} // Initialize grid API
+            onGridReady={onGridReady}
           />
         </div>
-
         <Button
           className="my-5"
           color="info"
           variant="contained"
-          onClick={handleAddNewCafe} // Navigate to the add new cafe page
+          onClick={handleAddNewCafe}
         >
           Add New Cafe
         </Button>

@@ -5,7 +5,6 @@ import Cafe, { ICafe } from "./models/cafe";
 
 dotenv.config();
 
-// Sample cafe data
 const cafesData = [
   {
     id: "cafe_001",
@@ -21,7 +20,6 @@ const cafesData = [
   },
 ];
 
-// Sample employee data
 const employeesData: {
   id: string;
   name: string;
@@ -51,16 +49,12 @@ const employeesData: {
   },
 ];
 
-// Reset the database by dropping collections
 const resetDatabase = async () => {
   try {
     console.log("Resetting database...");
-    // Connect to the database
     await mongoose.connect(process.env.MONGO_URI as string);
 
-    // Check if the connection is ready before accessing the database
     if (mongoose.connection.readyState === 1 && mongoose.connection.db) {
-      // Drop collections
       await mongoose.connection.db.dropCollection("employees");
       await mongoose.connection.db.dropCollection("cafes");
     } else {
@@ -71,39 +65,31 @@ const resetDatabase = async () => {
   } catch (err) {
     console.error("Error resetting the database:", err);
   } finally {
-    // Always close the connection
     await mongoose.disconnect();
   }
 };
 
-// Seed function to populate the database
 const seedDatabase = async () => {
   try {
     console.log("Seeding database...");
-    // Connect to the database
     await mongoose.connect(process.env.MONGO_URI as string);
 
-    // Clear the collections before seeding
     await Cafe.deleteMany({});
     await Employee.deleteMany({});
 
-    // Insert cafes and capture the ObjectIds
     const cafes = (await Cafe.insertMany(cafesData)) as (ICafe & {
       _id: mongoose.Types.ObjectId;
     })[];
 
-    // Assign cafe IDs to employees
     employeesData[0].cafe = cafes[0].id;
     employeesData[1].cafe = cafes[1].id;
 
-    // Insert employees
     await Employee.insertMany(employeesData);
 
     console.log("Database seeded successfully!");
   } catch (err) {
     console.error("Error seeding the database:", err);
   } finally {
-    // Always close the connection
     await mongoose.disconnect();
   }
 };

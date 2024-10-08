@@ -1,9 +1,9 @@
-import { Employee } from "./Employee"; // Assuming you have an Employee interface
+import { Employee } from "./Employee";
 
 export interface Cafe {
-  id?: string; // Optional for new cafes
+  id?: string;
   name: string;
   description: string;
   location: string;
-  employees?: Employee[]; // Optional field for employees associated with the cafe
+  employees?: Employee[];
 }
