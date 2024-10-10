@@ -11,13 +11,6 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tsconfigPaths()],
     server: {
       host: true,
-      proxy: {
-        "/api": {
-          target: "https://cafe-management-system-bv4j.onrender.com",
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ""),
-        },
-      },
     },
     resolve: {
       alias: {
