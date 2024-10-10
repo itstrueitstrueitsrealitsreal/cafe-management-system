@@ -10,8 +10,6 @@ export const useCafes = (location: string = "") => {
     queryKey: ["cafes", location],
     queryFn: async () => {
       const res = await fetch(`${API_URL}/cafes?location=${location}`);
-      console.log(res);
-      console.log(`${API_URL}/cafes?location=${location}`);
 
       if (!res.ok) {
         throw new Error(`Failed to fetch cafes: ${res.status}`);
@@ -22,13 +20,14 @@ export const useCafes = (location: string = "") => {
   });
 };
 
+// Fetch Employees
 export const useEmployees = (cafeId?: string) => {
   return useQuery({
-    queryKey: cafeId ? ["employees", cafeId] : ["employees"],
+    queryKey: cafeId ? ["employees", cafeId] : ["employees"], // Unique query key based on cafeId
     queryFn: async () => {
       const url = cafeId
         ? `${API_URL}/employees?cafe=${cafeId}`
-        : `${API_URL}/employees`;
+        : `${API_URL}/employees`; // Conditionally build the API URL
       const res = await fetch(url);
 
       if (!res.ok) {
@@ -40,6 +39,7 @@ export const useEmployees = (cafeId?: string) => {
   });
 };
 
+// Fetch a specific Cafe by ID
 export const useCafe = (id: string) => {
   return useQuery<Cafe>({
     queryKey: ["cafe", id],
@@ -55,6 +55,7 @@ export const useCafe = (id: string) => {
   });
 };
 
+// Fetch a specific Employee by ID
 export const useEmployee = (id: string) => {
   return useQuery<Employee>({
     queryKey: ["employee", id],
@@ -72,6 +73,7 @@ export const useEmployee = (id: string) => {
   });
 };
 
+// Add a Cafe
 export const useAddCafe = () => {
   const queryClient = useQueryClient();
 
@@ -81,21 +83,31 @@ export const useAddCafe = () => {
       description: string;
       location: string;
     }) => {
-      const res = await fetch(`${API_URL}/cafes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cafe),
-      });
+      try {
+        const res = await fetch(`${API_URL}/cafes`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", // Ensure the correct header is set
+          },
+          body: JSON.stringify(cafe), // Stringify the cafe object
+        });
 
-      if (!res.ok) {
-        const errorMessage = await res.text();
+        if (!res.ok) {
+          // Log the response body text for debugging
+          const errorMessage = await res.text();
 
-        throw new Error(`Failed to add cafe: ${res.status} - ${errorMessage}`);
+          throw new Error(
+            `Failed to add cafe: ${res.status} - ${errorMessage}`
+          );
+        }
+
+        const jsonResponse = await res.json();
+
+        return jsonResponse;
+      } catch (error) {
+        // Log the error in case of failure
+        throw error;
       }
-
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cafes"] });
@@ -105,7 +117,7 @@ export const useAddCafe = () => {
     },
   });
 };
-
+// Add an Employee
 export const useAddEmployee = () => {
   const queryClient = useQueryClient();
 
@@ -132,6 +144,7 @@ export const useAddEmployee = () => {
   });
 };
 
+// Update a Cafe
 export const useUpdateCafe = () => {
   const queryClient = useQueryClient();
 
@@ -141,15 +154,21 @@ export const useUpdateCafe = () => {
       cafe,
     }: {
       id: string;
-      cafe: { name: string; description: string; location: string };
+      cafe: {
+        name: string;
+        description: string;
+        location: string;
+      };
     }) => {
-      const res = await fetch(`${API_URL}/cafes/${id}`, {
+      const options: RequestInit = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(cafe),
-      });
+      };
+
+      const res = await fetch(`${API_URL}/cafes/${id}`, options);
 
       if (!res.ok) {
         throw new Error(`Failed to update cafe with ID ${id}: ${res.status}`);
@@ -166,6 +185,7 @@ export const useUpdateCafe = () => {
   });
 };
 
+// Update an Employee
 export const useUpdateEmployee = () => {
   const queryClient = useQueryClient();
 
@@ -200,6 +220,7 @@ export const useUpdateEmployee = () => {
   });
 };
 
+// Delete a Cafe
 export const useDeleteCafe = () => {
   const queryClient = useQueryClient();
 
@@ -224,6 +245,7 @@ export const useDeleteCafe = () => {
   });
 };
 
+// Delete an Employee
 export const useDeleteEmployee = () => {
   const queryClient = useQueryClient();
 
