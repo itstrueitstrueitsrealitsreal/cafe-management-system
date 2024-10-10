@@ -10,6 +10,8 @@ export const useCafes = (location: string = "") => {
     queryKey: ["cafes", location],
     queryFn: async () => {
       const res = await fetch(`${API_URL}/cafes?location=${location}`);
+      console.log(res);
+      console.log(`${API_URL}/cafes?location=${location}`);
 
       if (!res.ok) {
         throw new Error(`Failed to fetch cafes: ${res.status}`);
