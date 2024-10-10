@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
       port: 5173,
       proxy: {
         "/api": {
-          target: env.VITE_BACKEND_URL || "http://localhost:3000",
+          target: "https://cafe-management-system-bv4j.onrender.com",
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ""),
         },
