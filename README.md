@@ -2,7 +2,7 @@
 
 This repository contains the **Café Management System**, a full-stack application designed for managing cafes and their employees. The system includes a backend API and a frontend user interface, allowing for complete CRUD operations on both cafes and employees.
 
-This project's backend is hosted [here](https://cafe-management-system-bv4j.onrender.com), and the frontend is hosted [here]().
+This project's backend is hosted [here](https://cafe-management-system-bv4j.onrender.com), and the frontend is hosted [here](https://cafe-management-system-jze9cacfk.vercel.app/).
 
 For more information, refer to the [backend README](./backend/README.md) and the [frontend README](./frontend/README.md).
 
@@ -142,7 +142,7 @@ The project uses **Docker Compose** to manage multiple services, including the b
 1. **Clone the repo**:
 
    ```bash
-   git clone https://github.com/your-username/cafe-management-system.git
+   git clone https://github.com/itstrueitstrueitsrealitsreal/cafe-management-system.git
    cd cafe-management-system
    ```
 
@@ -173,4 +173,10 @@ Sample `.env` for the backend:
 
 ```env
 MONGO_URI=mongodb://mongo:27017/cafe_management_system
+```
+
+Sample `.env` for the frontend:
+
+```env
+VITE_BACKEND_URL=https://cafe-management-system-bv4j.onrender.com
 ```

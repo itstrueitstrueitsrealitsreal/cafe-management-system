@@ -1,6 +1,6 @@
 # Café Management System Frontend
 
-This is the documentation for the subdirectory which houses the frontend code of this Café Management System project. It communicates with the backend at https://cafe-management-system-bv4j.onrender.com.
+This is the documentation for the subdirectory which houses the frontend code of this Café Management System project. It communicates with the backend, which is hosted [here](https://cafe-management-system-bv4j.onrender.com).
 
 ## Technologies Used
 
@@ -40,30 +40,6 @@ If you want to run the development server without Docker, run the following comm
 ```bash
 npm run dev
 ```
-
-If you want to run the development server using Docker, do the following:
-
-1. Build the Docker image:
-
-   ```sh
-   docker build -t cafe-management-backend .
-   ```
-
-2. Run the Docker container:
-
-   ```sh
-   docker run -d -p 3000:3000 --env-file .env cafe-management-backend
-   ```
-
-### Setup pnpm (optional)
-
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
-
-```bash
-public-hoist-pattern[]=*@nextui-org/*
-```
-
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
 
 ## License
 

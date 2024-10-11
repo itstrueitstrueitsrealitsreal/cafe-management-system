@@ -88,19 +88,45 @@ export const deleteCafe = async (
   }
 };
 
+export const getCafeById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const cafe = await Cafe.findOne({ id: req.params.id as string }).lean();
+
+    if (!cafe) {
+      res.status(404).json({ message: "Cafe not found" });
+      return;
+    }
+
+    const employeesCount = await Employee.countDocuments({ cafe: cafe.id });
+
+    const cafeWithEmployees = {
+      ...cafe,
+      employees: employeesCount,
+    };
+
+    res.json(cafeWithEmployees);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
+
 export const getCafesByLocation = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
     const location = req.query.location as string | undefined;
-    const id = req.query.id as string | undefined;
 
     let cafes;
     if (location) {
       cafes = await Cafe.find({ location });
-    } else if (id) {
-      cafes = await Cafe.find({ id });
+      if (!cafes) {
+        res.status(200).json([]);
+        return;
+      }
     } else {
       cafes = await Cafe.find({});
     }

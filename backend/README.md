@@ -1,15 +1,12 @@
-# Café Management System
+# Café Management System Backend
 
 This repository contains the **Café Management System**, a full-stack application designed for managing cafes and their employees. The system includes a backend API and a frontend user interface, allowing for complete CRUD operations on both cafes and employees.
 
-The backend is hosted [here](https://cafe-management-system-bv4j.onrender.com), and the frontend is hosted [here]().
-
-For more information, refer to the [backend README](./backend/README.md) and the [frontend README](./frontend/README.md).
+The backend is hosted [here](https://cafe-management-system-bv4j.onrender.com)
 
 ## Table of Contents
 
 - [Technologies Used](#technologies-used)
-- [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
@@ -17,21 +14,9 @@ For more information, refer to the [backend README](./backend/README.md) and the
 - [API Endpoints](#api-endpoints)
   - [Cafe Endpoints](#cafe-endpoints)
   - [Employee Endpoints](#employee-endpoints)
-- [Docker Setup](#docker-setup)
-  - [Build and Run with Docker](#build-and-run-with-docker)
   - [Environment Variables](#environment-variables)
 
 ## Technologies Used
-
-### Frontend
-
-- **Vite**
-- **NextUI (v2)**
-- **Tailwind CSS**
-- **TypeScript**
-- **Framer Motion**
-
-### Backend
 
 - **Node.js**
 - **Express**
@@ -43,15 +28,6 @@ For more information, refer to the [backend README](./backend/README.md) and the
 
 - **Docker**
 - **Docker Compose**
-
-## Project Structure
-
-The project is split into two main directories:
-
-```bash
-/frontend    # React frontend built with Vite and NextUI
-/backend     # Node.js backend built with Express and MongoDB
-```
 
 ## Getting Started
 
@@ -71,49 +47,19 @@ cd cafe-management-system
 
 ### Running the Application
 
-#### Running with Docker
-
-1. **Build the Docker images**:
-
-   ```bash
-   docker-compose build
-   ```
-
-2. **Run the containers**:
-
-   ```bash
-   docker-compose up
-   ```
-
-3. **Access the application**:
-   - Frontend: `http://localhost:5173`
-   - Backend API: `http://localhost:3000`
-
 #### Running Locally
 
-1. **Backend**:
+- **Backend**:
 
-   - Navigate to the backend directory:
+  - Navigate to the backend directory:
 
-     ```bash
-     cd backend
-     npm install
-     npm start
-     ```
+    ```bash
+    cd backend
+    npm install
+    npm start
+    ```
 
-   - Ensure MongoDB is running locally or via Docker.
-
-2. **Frontend**:
-
-   - Navigate to the frontend directory:
-
-     ```bash
-     cd frontend
-     npm install
-     npm run dev
-     ```
-
-   - Access the frontend at `http://localhost:5173`.
+  - Ensure MongoDB is running locally or via Docker.
 
 ## API Endpoints
 
@@ -124,10 +70,14 @@ cd cafe-management-system
 - **GET** `/cafes/:id`: Get details of a specific cafe.
 - **PUT** `/cafes/:id`: Update a specific cafe.
 - **DELETE** `/cafes/:id`: Delete a specific cafe and all employees associated with it.
+- **GET** `/cafes?location=<location>`: Get a list of all cafes with a specific location, with the response being sorted by the highest number of employees first. If a valid location is provided, it will filter the list to return only cafes that is within the area
+  If an invalid location is provided, it should return an empty list.
+  If no location is provided, it should list down all cafes.
 
 ### Employee Endpoints
 
 - **GET** `/employees`: Get a list of all employees.
+- **GET** `/employees?cafe=<id>`: Get a list of all employees in a specific cafe by passing in its id.
 - **POST** `/employees`: Create a new employee.
 - **GET** `/employees/:id`: Get details of a specific employee.
 - **PUT** `/employees/:id`: Update a specific employee.
@@ -138,41 +88,11 @@ cd cafe-management-system
 - When deleting a cafe, all employees associated with that cafe are also deleted.
 - Employees are associated with cafes through the `cafeId` field.
 
-## Docker Setup
-
-The project uses **Docker Compose** to manage multiple services, including the backend (Node.js), frontend (Vite), and MongoDB database.
-
-### Build and Run with Docker
-
-1. **Clone the repo**:
-
-   ```bash
-   git clone https://github.com/itstrueitstrueitsrealitsreal/cafe-management-system.git
-   cd cafe-management-system
-   ```
-
-2. **Build the Docker images**:
-
-   ```bash
-   docker-compose build
-   ```
-
-3. **Run the services**:
-
-   ```bash
-   docker-compose up
-   ```
-
-4. **Access the application**:
-   - Frontend: `http://localhost:5173`
-   - Backend API: `http://localhost:3000`
-
 ### Environment Variables
 
 The project uses `.env` files to manage configuration:
 
-- **Backend**: Place the `.env` file inside the `/backend` directory.
-- **Frontend**: Place the `.env` file inside the `/frontend` directory.
+Place the `.env` file inside the `/backend` directory.
 
 Sample `.env` for the backend:
 
@@ -180,10 +100,4 @@ Sample `.env` for the backend:
 MONGO_URI=mongodb://mongo:27017/cafe_management_system
 ```
 
-### Additional Environment Variables
-
-You may add more environment variables to customize the behavior of the application, such as:
-
-- `FRONTEND_PORT`: Specify the port for the frontend.
-- `BACKEND_PORT`: Specify the port for the backend.
 - `MONGO_URI`: MongoDB connection string (used by the backend).
