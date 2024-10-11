@@ -168,15 +168,3 @@ The project uses `.env` files to manage configuration:
 
 - **Backend**: Place the `.env` file inside the `/backend` directory.
 - **Frontend**: Place the `.env` file inside the `/frontend` directory.
-
-Sample `.env` for the backend:
-
-```env
-MONGO_URI=mongodb://mongo:27017/cafe_management_system
-```
-
-Sample `.env` for the frontend:
-
-```env
-VITE_BACKEND_URL=https://cafe-management-system-bv4j.onrender.com
-```

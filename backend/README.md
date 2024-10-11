@@ -98,6 +98,10 @@ Sample `.env` for the backend:
 
 ```env
 MONGO_URI=mongodb://mongo:27017/cafe_management_system
+PORT=3000
+FRONTEND_URL=http://localhost:5173
 ```
 
 - `MONGO_URI`: MongoDB connection string (used by the backend).
+- `PORT`: Port that the backend is running on.
+- `FRONTEND_URL`: URL of the frontend.

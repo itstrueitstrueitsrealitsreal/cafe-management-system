@@ -44,3 +44,17 @@ npm run dev
 ## License
 
 Licensed under the [MIT license](https://github.com/nextui-org/vite-template/blob/main/LICENSE).
+
+### Environment Variables
+
+The project uses `.env` files to manage configuration:
+
+Place the `.env` file inside the `/backend` directory.
+
+Sample `.env` for the backend:
+
+```env
+VITE_BACKEND_URL=http://localhost:3000
+```
+
+- `VITE_BACKEND_URL`: The URL of the backend.
